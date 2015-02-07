@@ -1,11 +1,7 @@
 import mechanize, json
 from bs4 import BeautifulSoup
 from collections import OrderedDict
-from flask import Flask
-from flask import request
-from datetime import timedelta
-from flask import make_response, request, current_app
-from functools import update_wrapper
+from flask import Flask, request
 
 app = Flask(__name__)
 
