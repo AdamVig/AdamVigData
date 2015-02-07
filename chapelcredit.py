@@ -103,7 +103,7 @@ def printDiningMenu(diningMenu):
         print dayName, "Dinner: "
         print dayMenu["dinner"]
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/chapelcredit", methods=['GET', 'POST'])
 def main():
     if request.method == 'POST':
         username = request.form['username']
