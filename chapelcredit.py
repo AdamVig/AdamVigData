@@ -104,6 +104,7 @@ def printDiningMenu(diningMenu):
         print dayMenu["dinner"]
 
 @app.route("/chapelcredit", methods=['GET', 'POST'])
+@crossdomain(origin='*')
 def main():
     if request.method == 'POST':
         username = request.form['username']
