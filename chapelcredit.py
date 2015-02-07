@@ -1,6 +1,9 @@
-import mechanize, getpass, json, urlparse
+import mechanize, json
 from bs4 import BeautifulSoup
 from collections import OrderedDict
+from flask import Flask
+from flask import request
+app = Flask(__name__)
 
 # Login to My.Gordon.edu with given credentials
 # Returns browser instance
@@ -100,8 +103,16 @@ def printDiningMenu(diningMenu):
         print dayName, "Dinner: "
         print dayMenu["dinner"]
 
-username = request.POST['username']
-password = request.POST['password']
+@app.route("/", methods=['GET', 'POST'])
+def main():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        chapelCredit = getChapelCredit(username, password, mechanize.Browser())
+        return json.dumps(chapelCredit)
+    else:
+        return "Please POST. Bye!"
 
-chapelCredit = getChapelCredit(username, password, mechanize.Browser())
-print json.dumps(chapelCredit)
+if __name__ == "__main__":
+    # app.run(host='0.0.0.0')
+    app.run(debug=True)
