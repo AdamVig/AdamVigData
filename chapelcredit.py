@@ -103,15 +103,15 @@ def printDiningMenu(diningMenu):
         print dayName, "Dinner: "
         print dayMenu["dinner"]
 
-@app.route("/chapelcredit", methods=['GET', 'POST'])
+@app.route("/chapelcredit", methods=['GET'])
 def main():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    if request.method == 'GET':
+        username = request.args.get('username')
+        password = request.args.get('password')
         chapelCredit = getChapelCredit(username, password, mechanize.Browser())
         return json.dumps(chapelCredit)
     else:
-        return "Please POST. Bye!"
+        return "Please only send GET requests. Bye!"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
