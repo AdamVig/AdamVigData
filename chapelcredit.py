@@ -2,8 +2,9 @@ import mechanize, json
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from flask import Flask, request
-
+from flask.ext.cors import CORS, cross_origin
 app = Flask(__name__)
+CORS(app)
 
 # Login to My.Gordon.edu with given credentials
 # Returns browser instance
@@ -104,6 +105,7 @@ def printDiningMenu(diningMenu):
         print dayMenu["dinner"]
 
 @app.route("/chapelcredit", methods=['GET'])
+@cross_origin()
 def main():
     if request.method == 'GET':
         username = request.args.get('username')
