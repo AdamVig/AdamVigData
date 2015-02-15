@@ -1,4 +1,4 @@
-import mechanize, json
+import json, os, requests
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from flask import Flask, request
