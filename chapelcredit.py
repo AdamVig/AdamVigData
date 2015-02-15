@@ -14,6 +14,7 @@ def getChapelCredit(username, password):
     response = requests.get(
         'https://go.gordon.edu/student/chapelcredits/viewattendance.cfm',
         auth=(username, password))
+    chapelCredit = {}
 
     # Successful
     if response.status_code == 200:
@@ -27,19 +28,12 @@ def getChapelCredit(username, password):
         reqRow = creditTable.find_all('tr')[1]
         reqCell = reqRow.find_all('td')[1]
 
-        return {
+        chapelCredit = {
             'credit': int(creditCell.text),
-            'required': int(reqCell.text),
-            'error': None
+            'required': int(reqCell.text)
         }
 
-    # Error
-    else:
-        return {
-            'credit': 0,
-            'required': 0,
-            'error': response.status_code
-        }
+    return app.make_response((json.dumps(chapelCredit), response.status_code))
 
 @app.route("/chapelcredit", methods=['GET'])
 @cross_origin()
@@ -47,10 +41,9 @@ def main():
     if request.method == 'GET':
         username = request.args.get('username')
         password = request.args.get('password')
-        chapelCredit = getChapelCredit(username, password)
-        return json.dumps(chapelCredit)
+        return getChapelCredit(username, password)
     else:
-        return "Wrong request type: " + request.method + ". Please only GET."
+        return app.make_response(("Please only use GET requests.", 401))
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
