@@ -6,46 +6,51 @@ from flask.ext.cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app)
 
-
-# Login to My.Gordon.edu with given credentials
-# Returns browser instance
-def loginGoGordon(username, password, browser):
-    browser.add_password("https://go.gordon.edu", username, password)
-    return browser
-
 # Get chapel credit from Go.Gordon.edu with given credentials
 # Returns dictionary with:
 #   credit   (int)   User's credits
 #   required (int)   Total required credits
-def getChapelCredit(username, password, browser):
-    browser = loginGoGordon(username, password, browser)
-    browser.open("https://go.gordon.edu/student/chapelcredits/viewattendance.cfm")
+def getChapelCredit(username, password):
+    response = requests.get(
+        'https://go.gordon.edu/student/chapelcredits/viewattendance.cfm',
+        auth=(username, password))
 
-    soup = BeautifulSoup(browser.response().read())
+    # Successful
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text)
 
-    creditTable = soup.find_all('table')[8]
+        creditTable = soup.find_all('table')[8]
 
-    creditRow = creditTable.find_all('tr')[0]
-    creditCell = creditRow.find_all('td')[1]
+        creditRow = creditTable.find_all('tr')[0]
+        creditCell = creditRow.find_all('td')[1]
 
-    reqRow = creditTable.find_all('tr')[1]
-    reqCell = reqRow.find_all('td')[1]
+        reqRow = creditTable.find_all('tr')[1]
+        reqCell = reqRow.find_all('td')[1]
 
-    return {
-        "credit": int(creditCell.text),
-        "required": int(reqCell.text)
-    }
+        return {
+            'credit': int(creditCell.text),
+            'required': int(reqCell.text),
+            'error': None
+        }
 
-@app.route("/chapelcredit", methods=['GET', 'POST'])
+    # Error
+    else:
+        return {
+            'credit': 0,
+            'required': 0,
+            'error': response.status_code
+        }
+
+@app.route("/chapelcredit", methods=['GET'])
 @cross_origin()
 def main():
-    if request.method == 'POST':
+    if request.method == 'GET':
         username = request.args.get('username')
         password = request.args.get('password')
-        chapelCredit = getChapelCredit(username, password, mechanize.Browser())
+        chapelCredit = getChapelCredit(username, password)
         return json.dumps(chapelCredit)
     else:
-        return "Please only send GET requests. Bye!"
+        return "Wrong request type: " + request.method + ". Please only GET."
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
