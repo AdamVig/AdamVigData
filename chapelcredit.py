@@ -1,4 +1,4 @@
-import json, os, requests
+import json, os, requests, base64
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 from flask import Flask, request
@@ -41,6 +41,7 @@ def main():
     if request.method == 'GET':
         username = request.args.get('username')
         password = request.args.get('password')
+        password = base64.b64decode(password)
         return getChapelCredit(username, password)
     else:
         return app.make_response(("Please only use GET requests.", 401))
