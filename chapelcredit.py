@@ -1,4 +1,4 @@
-import jsonify, os, requests, base64, mechanize
+import json, os, requests, base64, mechanize
 from bs4 import BeautifulSoup
 from flask import Flask, request
 from flask.ext.cors import CORS, cross_origin
@@ -42,7 +42,7 @@ def getMealPoints(username, password, browser):
         pointsCell = pointsRow.find_all('td')[1].find('span')
         mealPoints = { 'mealpoints': pointsCell.string }
 
-    return app.make_response((jsonify(mealPoints), browser.response().code))
+    return app.make_response((json.dumps(mealPoints), browser.response().code))
 
 # Get chapel credit from Go.Gordon.edu with given credentials
 # Returns dictionary with:
@@ -71,7 +71,7 @@ def getChapelCredit(username, password):
             'required': int(reqCell.text)
         }
 
-    return app.make_response((jsonify(chapelCredit), response.status_code))
+    return app.make_response((json.dumps(chapelCredit), response.status_code))
 
 @app.route("/chapelcredit", methods=['GET'])
 @cross_origin(origins='http://local.dev:8100', supports_credentials=True)
