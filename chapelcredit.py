@@ -75,7 +75,7 @@ def getChapelCredit(username, password):
 
 @app.route("/chapelcredit", methods=['GET'])
 @cross_origin(origins='http://local.dev:8100', supports_credentials=True)
-def main():
+def chapel_credit():
     if request.method == 'GET':
         username = request.args.get('username')
         password = request.args.get('password')
