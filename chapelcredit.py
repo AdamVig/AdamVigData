@@ -84,6 +84,17 @@ def chapel_credit():
     else:
         return app.make_response(("Please only use GET requests.", 401))
 
+@app.route("/mealpoints", methods=['GET'])
+@cross_origin(origins='http://local.dev:8100', supports_credentials=True)
+def meal_points():
+    if request.method == 'GET':
+        username = request.args.get('username')
+        password = request.args.get('password')
+        password = base64.b64decode(password)
+        return getMealPoints(username, password, mechanize.Browser())
+    else:
+        return app.make_response(("Please only use GET requests.", 401))
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
