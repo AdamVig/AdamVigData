@@ -1,6 +1,5 @@
-import json, os, requests, base64
+import json, os, requests, base64, mechanize
 from bs4 import BeautifulSoup
-from collections import OrderedDict
 from flask import Flask, request
 from flask.ext.cors import CORS, cross_origin
 app = Flask(__name__)
