@@ -21,28 +21,51 @@ def loginMyGordon(username, password, browser):
 # Returns number of meal points
 def getMealPoints(username, password, browser):
     mealPoints = {}
+    invalidLogin = False
 
-    # Login and navigate to mealpoints page
+    # Login
     browser = loginMyGordon(username, password, browser)
-    mealpointsLink = browser.open('/ICS/Students/Mealpoints.jnz')
 
-    # Parse HTML to find URL that iFrame points to
+    # Check for invalid login
     soup = BeautifulSoup(browser.response().read())
-    iframeSrc = soup.find('iframe')['src']
+    loginMessage = soup.find(id="CP_V_lblLoginMessage")
+    if loginMessage:
+        if loginMessage.string == "Invalid Login":
+            invalidLogin = True
 
-    # Navigate to page that displays mealpoints
-    browser.open('https://my.gordon.edu' + iframeSrc)
-    browser.open('https://my.gordon.edu/GMEX')
+    # Invalid login, cancel
+    if invalidLogin:
 
-    if browser.response().code == 200:
-        # Parse HTML to find mealpoints
+        return app.make_response((
+            "Invalid login to My Gordon.",
+            401))
+
+    # Valid login, proceed
+    else:
+
+        # Navigate to mealpoints page
+        browser.open('/ICS/Students/Mealpoints.jnz')
+
+        # Parse HTML to find URL that iFrame points to
         soup = BeautifulSoup(browser.response().read())
-        mainTable = soup.find_all('table')[1]
-        pointsRow = mainTable.find_all('tr')[0]
-        pointsCell = pointsRow.find_all('td')[1].find('span')
-        mealPoints = { 'mealpoints': pointsCell.string }
+        iframe = soup.find('iframe')
+        iframeSrc = iframe['src']
 
-    return app.make_response((json.dumps(mealPoints), browser.response().code))
+        # Navigate to page that displays mealpoints
+        browser.open('https://my.gordon.edu' + iframeSrc)
+        browser.open('https://my.gordon.edu/GMEX')
+
+        if browser.response().code == 200:
+            # Parse HTML to find mealpoints
+            soup = BeautifulSoup(browser.response().read())
+            mainTable = soup.find_all('table')[1]
+            pointsRow = mainTable.find_all('tr')[0]
+            pointsCell = pointsRow.find_all('td')[1].find('span')
+            mealPoints = { 'mealpoints': pointsCell.string }
+
+        return app.make_response((
+            json.dumps(mealPoints),
+            browser.response().code))
 
 # Get chapel credit from Go.Gordon.edu with given credentials
 # Returns dictionary with:
@@ -71,7 +94,9 @@ def getChapelCredit(username, password):
             'required': int(reqCell.text)
         }
 
-    return app.make_response((json.dumps(chapelCredit), response.status_code))
+    return app.make_response((
+        json.dumps(chapelCredit),
+        response.status_code))
 
 @app.route("/chapelcredit", methods=['GET'])
 @cross_origin(origins='http://local.dev:8100', supports_credentials=True)
@@ -82,7 +107,9 @@ def chapel_credit():
         password = base64.b64decode(password)
         return getChapelCredit(username, password)
     else:
-        return app.make_response(("Please only use GET requests.", 401))
+        return app.make_response((
+            "Please only use GET requests.",
+            401))
 
 @app.route("/mealpoints", methods=['GET'])
 @cross_origin(origins='http://local.dev:8100', supports_credentials=True)
@@ -93,7 +120,9 @@ def meal_points():
         password = base64.b64decode(password)
         return getMealPoints(username, password, mechanize.Browser())
     else:
-        return app.make_response(("Please only use GET requests.", 401))
+        return app.make_response((
+            "Please only use GET requests.",
+            401))
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
