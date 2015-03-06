@@ -19,19 +19,24 @@ def loginMyGordon(username, password, browser):
 # Get meal points from My.Gordon.edu for given user
 # Returns number of meal points
 def getMealPoints(username, password, browser):
+
+    # Login and navigate to mealpoints page
     browser = loginMyGordon(username, password, browser)
+    mealpointsLink = browser.open('/ICS/Students/Mealpoints.jnz')
 
-    studentsLink = browser.find_link(url="./Students/")
-    browser.follow_link(studentsLink)
-
-    mealpointsLink = browser.find_link(url="/ICS/Students/Mealpoints.jnz")
-    browser.follow_link(mealpointsLink)
-    headers = [
-        ('Cookie', "ASP.NET_SessionId=55zcxgufse0frq3jyzpkxj5r; _ga=GA1.2.151033858.1421028027; __utmt=1; __utma=156794413.151033858.1421028027.1422829862.1422836737.8; __utmb=156794413.10.10.1422836737; __utmc=156794413; __utmz=156794413.1421261850.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); .sessionheartbeat=2/1/2015 8:36:31 PM"),
-        ('Referer', "https://my.gordon.edu/gmex/home/bounce?fwkid=deff9811-eb12-4572-8302-da42ebcf29d1")
-    ]
-    browser.addheaders = headers;
-    browser.open("https://my.gordon.edu/GMEX")
-    print browser.geturl()
+    # Parse HTML to find URL that iFrame points to
     soup = BeautifulSoup(browser.response().read())
-    print soup
+    iframeSrc = soup.find('iframe')['src']
+
+    # Navigate to page that displays mealpoints
+    browser.open('https://my.gordon.edu' + iframeSrc)
+    browser.open('https://my.gordon.edu/GMEX')
+
+    # Parse HTML to find mealpoints
+    soup = BeautifulSoup(browser.response().read())
+    mainTable = soup.find_all('table')[1]
+    pointsRow = mainTable.find_all('tr')[0]
+    pointsCell = pointsRow.find_all('td')[1].find('span')
+    mealPoints = pointsCell.string
+
+    return mealPoints
