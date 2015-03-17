@@ -1,5 +1,6 @@
-import newrelic.agent
-newrelic.agent.initialize('./newrelic.ini')
+
+# import newrelic.agent
+# newrelic.agent.initialize('./newrelic.ini')
 
 import json, os, requests, base64, mechanize
 from bs4 import BeautifulSoup
