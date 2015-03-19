@@ -106,6 +106,10 @@ def chapel_credit():
         password = request.args.get('password')
         password = base64.b64decode(password)
         return getChapelCredit(username, password)
+    elif request.method == 'HEAD':
+        return app.make_response((
+            "Chapel credit endpoint is working.",
+            200))
     else:
         return app.make_response((
             "Please only use GET requests.",
@@ -119,6 +123,10 @@ def meal_points():
         password = request.args.get('password')
         password = base64.b64decode(password)
         return getMealPoints(username, password, mechanize.Browser())
+    elif request.method == 'HEAD':
+        return app.make_response((
+            "Meal points endpoint is working.",
+            200))
     else:
         return app.make_response((
             "Please only use GET requests.",
