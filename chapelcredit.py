@@ -115,6 +115,54 @@ def chapel_credit():
             "Please only use GET requests.",
             401))
 
+# Get chapel credit from Go.Gordon.edu with given credentials
+# Returns dictionary with:
+#   credit   (int)   User's credits
+#   required (int)   Total required credits
+def getChapelCredits(username, password):
+    response = requests.get(
+        'https://go.gordon.edu/student/chapelcredits/viewattendance.cfm',
+        auth=(username, password))
+    chapelCredits = {}
+
+    # Successful
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text)
+
+        creditTable = soup.find_all('table')[8]
+
+        creditRow = creditTable.find_all('tr')[0]
+        creditCell = creditRow.find_all('td')[1]
+
+        reqRow = creditTable.find_all('tr')[1]
+        reqCell = reqRow.find_all('td')[1]
+
+        chapelCredits = {
+            'amount': int(creditCell.text),
+            'outof': int(reqCell.text)
+        }
+
+    return app.make_response((
+        json.dumps(chapelCredits),
+        response.status_code))
+
+@app.route("/chapelcredits", methods=['GET'])
+@cross_origin(origins='http://local.dev:8100', supports_credentials=True)
+def chapel_credits():
+    if request.method == 'GET':
+        username = request.args.get('username')
+        password = request.args.get('password')
+        password = base64.b64decode(password)
+        return getChapelCredits(username, password)
+    elif request.method == 'HEAD':
+        return app.make_response((
+            "Chapel credit endpoint is working.",
+            200))
+    else:
+        return app.make_response((
+            "Please only use GET requests.",
+            401))
+
 @app.route("/mealpoints", methods=['GET'])
 @cross_origin(origins='http://local.dev:8100', supports_credentials=True)
 def meal_points():
