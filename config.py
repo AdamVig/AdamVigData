@@ -1,2 +1,2 @@
 # Allow for local development
-DEBUG = False
+DEBUG = True
