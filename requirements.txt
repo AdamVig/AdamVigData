@@ -1,4 +1,5 @@
 beautifulsoup4==4.3.2
+CouchDB==1.0
 Flask==0.10.1
 Flask-Cors==1.10.2
 gunicorn==19.2.1

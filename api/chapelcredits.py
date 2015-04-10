@@ -5,8 +5,7 @@ def get_chapel_credits(username, password):
     """Get chapel credits from Go Gordon"""
 
     url = 'go.gordon.edu/student/chapelcredits/viewattendance.cfm'
-    # response = requests.get('https://' + username + ':' + password + '@' + url)
-    response = requests.get('http://127.0.0.1:8100/test.html')
+    response = requests.get('https://' + username + ':' + password + '@' + url)
 
     if response.status_code == 200:
 
