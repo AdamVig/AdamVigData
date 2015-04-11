@@ -1,6 +1,5 @@
 from api import *
 
-
 end_point = '/gocostudent/<version>/'
 
 @app.route(end_point + 'chapelcredits', methods=['GET', 'HEAD'])
