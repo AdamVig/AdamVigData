@@ -1,6 +1,4 @@
 from api import *
-import newrelic.agent
-newrelic.agent.initialize('newrelic.ini')
 
 end_point = '/gocostudent/<version>/'
 
