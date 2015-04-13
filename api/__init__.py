@@ -9,5 +9,5 @@ daysleftinsemester, mealpointsperday
 app = Flask(__name__)
 CORS(app, resources={r"/*": {
     "origins": "http://local.dev:8100",
-    "supports_credentials": True }})
+    "supports_credentials": True }}, allow_headers='Content-Type')
 app.config.from_object('config')

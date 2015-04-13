@@ -51,5 +51,4 @@ def log_usage(username, data_type):
     if 'totalLogins' in user:
         user['totalLogins'] += 1
 
-    # What if user has not changed?
     save_user(user, db)
