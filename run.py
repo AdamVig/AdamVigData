@@ -37,7 +37,7 @@ def route_days_left_in_semester(version):
 @app.route(end_point + 'mealpointsperday', methods=['GET', 'HEAD'])
 def route_meal_points_per_day(version):
     credentials = services.getcredentials.get_credentials(request)
-    services.getcouchdb.log_usage(credentials[0], 'mealpointsperday')
+    services.getcouchdb.log_usage(credentials[0], 'mealPointsPerDay')
     if request.method == 'GET':
         data = mealpointsperday.get_meal_points_per_day(
             credentials[0],
