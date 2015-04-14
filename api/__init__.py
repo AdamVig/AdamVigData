@@ -7,7 +7,5 @@ import chapelcredits, calculatemealpoints, mealpoints, studentid, services, \
 daysleftinsemester, mealpointsperday
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {
-    "origins": "http://local.dev:8100",
-    "supports_credentials": True }}, allow_headers='Content-Type')
+CORS(app)
 app.config.from_object('config')
