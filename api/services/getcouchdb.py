@@ -1,4 +1,4 @@
-import couchdb, datetime
+import couchdb, getdate
 
 def get_couch_db():
     """Get Couch database from server"""
