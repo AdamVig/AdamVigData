@@ -6,43 +6,55 @@ end_point = '/gocostudent/<version>/'
 
 @app.route(end_point + 'chapelcredits', methods=['GET', 'HEAD'])
 def route_chapel_credits(version):
-    if request.method == 'GET':
+    if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
-        services.getcouchdb.log_usage(credentials[0], 'chapelCredits')
+        services.getcouchdb.log_usage(credentials[0], 'chapelCredits', version)
         data = chapelcredits.get_chapel_credits(credentials[0], credentials[1])
-        return app.make_response((json.dumps(data[0]), data[1]))
+        if isinstance(data[0], dict):
+            return app.make_response((json.dumps(data[0]), data[1]))
+        else:
+            return app.make_response((data[0], data[1]))
     else:
         return "Chapel credits endpoint is working."
 
 @app.route(end_point + 'mealpoints', methods=['GET', 'HEAD'])
 def route_meal_points(version):
-    if request.method == 'GET':
+    if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
-        services.getcouchdb.log_usage(credentials[0], 'mealPoints')
+        services.getcouchdb.log_usage(credentials[0], 'mealPoints', version)
         data = mealpoints.get_meal_points(credentials[0], credentials[1])
-        return app.make_response((json.dumps(data[0]), data[1]))
+        if isinstance(data[0], dict):
+            return app.make_response((json.dumps(data[0]), data[1]))
+        else:
+            return app.make_response((data[0], data[1]))
     else:
         return "Meal points endpoint is working."
 
 @app.route(end_point + 'daysleftinsemester', methods=['GET', 'HEAD'])
 def route_days_left_in_semester(version):
-    if request.method == 'GET':
+    if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
         data = daysleftinsemester.get_days_left_in_semester()
-        services.getcouchdb.log_usage(credentials[0], 'daysLeftInSemester')
-        return app.make_response((json.dumps(data[0]), data[1]))
+        services.getcouchdb.log_usage(credentials[0], 'daysLeftInSemester', version)
+        if isinstance(data[0], dict):
+            return app.make_response((json.dumps(data[0]), data[1]))
+        else:
+            return app.make_response((data[0], data[1]))
     else:
         return "Days left in semester endpoint is working."
 
 @app.route(end_point + 'mealpointsperday', methods=['GET', 'HEAD'])
 def route_meal_points_per_day(version):
-    credentials = services.getcredentials.get_credentials(request)
-    services.getcouchdb.log_usage(credentials[0], 'mealPointsPerDay')
-    if request.method == 'GET':
+    if request.method == 'GET' and request.args:
+        credentials = services.getcredentials.get_credentials(request)
+        services.getcouchdb.log_usage(credentials[0], 'mealPointsPerDay', version)
         data = mealpointsperday.get_meal_points_per_day(
             credentials[0],
             credentials[1])
-        return app.make_response((json.dumps(data[0]), data[1]))
+        if isinstance(data[0], dict):
+            return app.make_response((json.dumps(data[0]), data[1]))
+        else:
+            return app.make_response((data[0], data[1]))
     else:
         return "Meal points per day endpoint is working."
 
@@ -54,7 +66,10 @@ def route_app_info(version):
 @app.route(end_point + 'user/<username>/', methods=['GET', 'HEAD'])
 def route_user(version, username):
     user = services.getcouchdb.get_user(username)
-    return json.dumps(user)
+    if isinstance(user, dict):
+        return json.dumps(user)
+    else:
+        return user
 
 @app.route('/<appname>/<version>/', methods=['GET'])
 def route_app(appname=None, version=None):

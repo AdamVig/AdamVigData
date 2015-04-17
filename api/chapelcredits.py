@@ -30,6 +30,7 @@ def get_chapel_credits(username, password):
             }, 200
         else:
             return "No chapel credits found.", 404
-
+    elif response.status_code == 401:
+        return "Username and password do not match.", response.status_code
     else:
-        return "Chapel credits are unavailable", response.status_code
+        return "Chapel credits are unavailable.", response.status_code
