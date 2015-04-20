@@ -40,6 +40,7 @@ def log_usage(username, data_type, app_version):
             else:
                 user['dataRequests'][data_type] = 1
         else:
+            user['dataRequests'] = {}
             user['dataRequests'][data_type] = 1
 
         # Set last login time to now
