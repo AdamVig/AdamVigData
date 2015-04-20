@@ -8,6 +8,7 @@ Jinja2==2.7.3
 MarkupSafe==0.23
 mechanize==0.2.5
 newrelic==2.46.0.37
+pytz==2015.2
 requests==2.5.1
 six==1.9.0
 virtualenv==12.0.7
