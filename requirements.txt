@@ -5,6 +5,7 @@ Flask-Cors==1.10.2
 gunicorn==19.2.1
 itsdangerous==0.24
 Jinja2==2.7.3
+logging==0.4.9.6
 MarkupSafe==0.23
 mechanize==0.2.5
 newrelic==2.46.0.37

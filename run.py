@@ -1,8 +1,19 @@
 from api import *
-import newrelic.agent
+import newrelic.agent, logging, sys, os
+
 newrelic.agent.initialize('newrelic.ini')
 
-end_point = '/gocostudent/<version>/'
+os.environ['TZ'] = 'US/Eastern'
+LOG_FORMAT = '[%(asctime)s] %(levelname)s: %(message)s'
+DATE_FORMAT = "%b %d %H:%M:%S %p"
+END_POINT = '/gocostudent/<version>/'
+
+# Initialize request-level logging
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter(LOG_FORMAT, DATE_FORMAT)
+handler.setFormatter(formatter)
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
 
 @app.route(END_POINT + 'chapelcredits', methods=['GET', 'HEAD'])
 def route_chapel_credits(version):
@@ -88,6 +99,15 @@ def route_app(appname=None, version=None):
 @app.route('/', methods=['GET'])
 def route_default():
     return "The app server is running correctly."
+
+@app.after_request
+def log_request(response):
+    log = services.log.create_log(request, response)
+    if response.status_code == 200:
+        app.logger.info(log)
+    else:
+        app.logger.exception(log)
+    return response
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
