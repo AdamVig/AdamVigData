@@ -4,7 +4,7 @@ newrelic.agent.initialize('newrelic.ini')
 
 end_point = '/gocostudent/<version>/'
 
-@app.route(end_point + 'chapelcredits', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'chapelcredits', methods=['GET', 'HEAD'])
 def route_chapel_credits(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
@@ -17,7 +17,7 @@ def route_chapel_credits(version):
     else:
         return "Chapel credits endpoint is working."
 
-@app.route(end_point + 'mealpoints', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'mealpoints', methods=['GET', 'HEAD'])
 def route_meal_points(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
@@ -30,7 +30,7 @@ def route_meal_points(version):
     else:
         return "Meal points endpoint is working."
 
-@app.route(end_point + 'daysleftinsemester', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'daysleftinsemester', methods=['GET', 'HEAD'])
 def route_days_left_in_semester(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
@@ -43,7 +43,7 @@ def route_days_left_in_semester(version):
     else:
         return "Days left in semester endpoint is working."
 
-@app.route(end_point + 'mealpointsperday', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'mealpointsperday', methods=['GET', 'HEAD'])
 def route_meal_points_per_day(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
@@ -58,7 +58,7 @@ def route_meal_points_per_day(version):
     else:
         return "Meal points per day endpoint is working."
 
-@app.route(end_point + 'createuser', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'createuser', methods=['GET', 'HEAD'])
 def route_create_user(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request)
@@ -66,12 +66,12 @@ def route_create_user(version):
     else:
         return "Create user endpoint is working."
 
-@app.route(end_point + 'appinfo', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'appinfo', methods=['GET', 'HEAD'])
 def route_app_info(version):
     app_info = services.getcouchdb.get_app_info()
     return json.dumps(app_info)
 
-@app.route(end_point + 'user/<username>/', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'user/<username>/', methods=['GET', 'HEAD'])
 def route_user(version, username):
     user = services.getcouchdb.get_user(username)
     if isinstance(user, dict):
