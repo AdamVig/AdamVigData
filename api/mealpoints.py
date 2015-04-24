@@ -34,7 +34,19 @@ def get_meal_points(username, password):
 
         # Parse HTML to find URL that iFrame points to
         page = BeautifulSoup(browser.response().read())
-        iframe_src = page.find('iframe')['src']
+
+        # Test for error caused by professor accounts
+        notFoundMessage = page.find('span', { "class": "notFound" })
+        if notFoundMessage is not None:
+            if notFoundMessage.string == "You do not have the necessary permissions to view this page.":
+                return "Could not find mealpoints.", 404
+
+        iframe = page.find('iframe')
+
+        if iframe is None:
+            return "Could not find mealpoints.", 404
+        else:
+            iframe_src = iframe['src']
 
         # Navigate to page that displays mealpoints
         browser.open('https://my.gordon.edu' + iframe_src)
