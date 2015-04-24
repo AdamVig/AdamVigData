@@ -9,10 +9,13 @@ DATE_FORMAT = "%b %d %H:%M:%S %p"
 END_POINT = '/gocostudent/<version>/'
 
 # Initialize request-level logging
-handler = logging.StreamHandler(sys.stdout)
+streamhandler = logging.StreamHandler(sys.stdout)
+sysloghandler = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 26735))
 formatter = logging.Formatter(LOG_FORMAT, DATE_FORMAT)
-handler.setFormatter(formatter)
-app.logger.addHandler(handler)
+streamhandler.setFormatter(formatter)
+sysloghandler.setFormatter(formatter)
+app.logger.addHandler(sysloghandler)
+app.logger.addHandler(streamhandler)
 app.logger.setLevel(logging.INFO)
 
 @app.route(END_POINT + 'chapelcredits', methods=['GET', 'HEAD'])
