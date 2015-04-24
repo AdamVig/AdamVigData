@@ -1,5 +1,7 @@
 from api import *
-import newrelic.agent, logging, sys, os
+import newrelic.agent, sys, os, logging
+from logging import Formatter, StreamHandler
+from logging.handlers import SysLogHandler
 
 newrelic.agent.initialize('newrelic.ini')
 
@@ -9,9 +11,9 @@ DATE_FORMAT = "%b %d %H:%M:%S %p"
 END_POINT = '/gocostudent/<version>/'
 
 # Initialize request-level logging
-streamhandler = logging.StreamHandler(sys.stdout)
-sysloghandler = logging.handlers.SysLogHandler(address=('logs2.papertrailapp.com', 26735))
-formatter = logging.Formatter(LOG_FORMAT, DATE_FORMAT)
+streamhandler = StreamHandler(sys.stdout)
+sysloghandler = SysLogHandler(address=('logs2.papertrailapp.com', 26735))
+formatter = Formatter(LOG_FORMAT, DATE_FORMAT)
 streamhandler.setFormatter(formatter)
 sysloghandler.setFormatter(formatter)
 app.logger.addHandler(sysloghandler)
