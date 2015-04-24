@@ -82,7 +82,7 @@ def route_app_info(version):
     app_info = services.getcouchdb.get_app_info()
     return json.dumps(app_info)
 
-@app.route(END_POINT + 'user/<username>/', methods=['GET', 'HEAD'])
+@app.route(END_POINT + 'user/<username>', methods=['GET', 'HEAD'])
 def route_user(version, username):
     user = services.getcouchdb.get_user(username)
     if isinstance(user, dict):
@@ -90,7 +90,7 @@ def route_user(version, username):
     else:
         return user
 
-@app.route('/<appname>/<version>/', methods=['GET'])
+@app.route('/<appname>/<version>', methods=['GET'])
 def route_app(appname=None, version=None):
     return "The app server is running correctly for " + \
         appname + " " + \
