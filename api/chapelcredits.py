@@ -1,16 +1,20 @@
-import requests, json
+import mechanize
 from bs4 import BeautifulSoup
 
 def get_chapel_credits(username, password):
     """Get chapel credits from Go Gordon"""
 
-    url = 'go.gordon.edu/student/chapelcredits/viewattendance.cfm'
-    response = requests.get('https://' + username + ':' + password + '@' + url)
+    # Retrieve page
+    url = 'https://go.gordon.edu/student/chapelcredits/viewattendance.cfm'
+    browser = mechanize.Browser()
+    browser.set_handle_robots(False)
+    browser.add_password(url, username, password)
+    browser.open(url)
 
-    if response.status_code == 200:
+    if browser.response().code == 200:
 
-        if not "No Christian Life and Worship Credit Found" in response.text:
-            page = BeautifulSoup(response.text)
+        if not "No Christian Life and Worship Credit Found" in browser.response().read():
+            page = BeautifulSoup(browser.response().read())
 
             credit_table = page.find_all('table')[8]
 
@@ -30,7 +34,7 @@ def get_chapel_credits(username, password):
             }
         else:
             raise ValueError("No chapel credits found.", 404)
-    elif response.status_code == 401:
+    elif browser.response().code == 401:
         raise ValueError("Username and password do not match.", 401)
     else:
-        raise ValueError("Chapel credits are unavailable.", response.status_code)
+        raise ValueError("Chapel credits are unavailable.", browser.response().code)
