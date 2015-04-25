@@ -1,4 +1,4 @@
-import requests, json, mechanize
+import mechanize
 from services import loginmygordon
 from bs4 import BeautifulSoup
 
