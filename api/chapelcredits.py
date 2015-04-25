@@ -27,10 +27,10 @@ def get_chapel_credits(username, password):
             return {
                 'data': int(credits),
                 'outof': int(required)
-            }, 200
+            }
         else:
-            return "No chapel credits found.", 404
+            raise ValueError("No chapel credits found.", 404)
     elif response.status_code == 401:
-        return "Username and password do not match.", response.status_code
+        raise ValueError("Username and password do not match.", 401)
     else:
-        return "Chapel credits are unavailable.", response.status_code
+        raise ValueError("Chapel credits are unavailable.", response.status_code)

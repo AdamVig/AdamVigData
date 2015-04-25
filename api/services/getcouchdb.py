@@ -17,7 +17,10 @@ def get_user(username, db=get_couch_db()):
     """Get user from database"""
 
     user = db.get(username)
-    return user or "User does not exist."
+    if user is not None:
+        return user
+    else:
+        raise ValueError("User does not exist.", 404)
 
 def save_user(user, db=get_couch_db()):
     """Save user in database or update existing user"""

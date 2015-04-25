@@ -5,11 +5,6 @@ from bs4 import BeautifulSoup
 def get_meal_points(username, password):
     """Get meal points from My Gordon"""
 
-    url = 'go.gordon.edu/student/chapelcredits/viewattendance.cfm'
-    response = requests.get('https://' + username + ':' + password + '@' + url)
-
-    invalid_login = False
-
     # Login
     browser = loginmygordon.login_my_gordon(
         username, password, mechanize.Browser())
@@ -19,59 +14,50 @@ def get_meal_points(username, password):
     loginMessage = soup.find(id="CP_V_lblLoginMessage")
     if loginMessage:
         if loginMessage.string == "Invalid Login":
-            invalid_login = True
+            raise ValueError("Invalid login to My Gordon", 401)
 
-    # Invalid login, cancel
-    if invalid_login:
 
-        return "Invalid login to My Gordon.", 401
+    # Navigate to mealpoints page
+    browser.open('/ICS/Students/Mealpoints.jnz')
 
-    # Valid login, proceed
-    else:
+    # Parse HTML to find URL that iFrame points to
+    page = BeautifulSoup(browser.response().read())
 
-        # Navigate to mealpoints page
-        browser.open('/ICS/Students/Mealpoints.jnz')
+    # Test for error caused by professor accounts
+    notFoundMessage = page.find('span', { "class": "notFound" })
+    if notFoundMessage is not None:
+        if notFoundMessage.string == "You do not have the necessary permissions to view this page.":
+            raise ValueError("Could not find mealpoints.", 404)
 
-        # Parse HTML to find URL that iFrame points to
+    iframe = page.find('iframe')
+
+    if iframe is None:
+        raise ValueError("Could not find mealpoints.", 404)
+
+    # Navigate to page that displays mealpoints
+    browser.open('https://my.gordon.edu' + iframe['src'])
+    browser.open('https://my.gordon.edu/GMEX')
+
+    if browser.response().code == 200:
+
         page = BeautifulSoup(browser.response().read())
 
-        # Test for error caused by professor accounts
-        notFoundMessage = page.find('span', { "class": "notFound" })
-        if notFoundMessage is not None:
-            if notFoundMessage.string == "You do not have the necessary permissions to view this page.":
-                return "Could not find mealpoints.", 404
+        meal_points = page        \
+            .find_all('table')[1] \
+            .find_all('tr')[0]    \
+            .find_all('td')[1]    \
+            .find('span')         \
+            .text
 
-        iframe = page.find('iframe')
+        meal_points = parse_meal_points(meal_points)
 
-        if iframe is None:
-            return "Could not find mealpoints.", 404
-        else:
-            iframe_src = iframe['src']
+        return { 'data': meal_points }
 
-        # Navigate to page that displays mealpoints
-        browser.open('https://my.gordon.edu' + iframe_src)
-        browser.open('https://my.gordon.edu/GMEX')
-
-        if browser.response().code == 200:
-
-            page = BeautifulSoup(browser.response().read())
-
-            meal_points = page        \
-                .find_all('table')[1] \
-                .find_all('tr')[0]    \
-                .find_all('td')[1]    \
-                .find('span')         \
-                .text
-
-            meal_points = parse_meal_points(meal_points)
-
-            return { 'data': meal_points }, 200
-
-        else:
-            return "Meal points are not available", browser.response().code
+    else:
+        raise ValueError("Meal points are not available", browser.response().code)
 
 def parse_meal_points(meal_points):
-    """Parses meal points string into a rounded integer"""
+    """Parse meal points string into a rounded integer"""
 
     # Remove dollar sign
     meal_points = meal_points[1:]

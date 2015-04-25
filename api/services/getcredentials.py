@@ -1,13 +1,13 @@
 import base64
 
-def get_credentials(request):
-    """Retrieve username and password from request object
+def get_credentials(args):
+    """Retrieve username and password from args object
     Decode password using Base64 library
     """
 
-    username = request.args.get('username')
-    password = request.args.get('password')
-    password = base64.b64decode(password)
+    username = args.get('username')
+    password = args.get('password')
+
     try:
         password = base64.b64decode(password)
     except:
