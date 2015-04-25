@@ -129,6 +129,11 @@ def route_app(appname=None, version=None):
 def route_default():
     return "The app server is running correctly."
 
+@app.before_request
+def before_request():
+    if 'gocostudent' not in request.url:
+        return app.make_response(("Resource not found.", 404))
+
 @app.after_request
 def log_request(response):
     log = services.log.create_log(request, response)
