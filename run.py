@@ -37,7 +37,10 @@ def get_data(getter, request_info):
     try:
         data = getter(credentials[0], credentials[1])
     except ValueError as err:
-        return app.make_response((err.args[0], err.args[1]))
+        if len(err.args) == 2:
+            return app.make_response((err.args[0], err.args[1]))
+        else:
+            return app.make_response((err.message, 500))
     else:
         # Log usage
         services.getcouchdb.log_usage(credentials[0],
