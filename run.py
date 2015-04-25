@@ -8,7 +8,7 @@ newrelic.agent.initialize('newrelic.ini')
 
 os.environ['TZ'] = 'US/Eastern'
 LOG_FORMAT = '[%(asctime)s] %(levelname)s: %(message)s'
-DATE_FORMAT = "%b %d %H:%M:%S %p"
+DATE_FORMAT = "%b %d %I:%M:%S %p"
 END_POINT = '/gocostudent/<version>/'
 
 # Initialize request-level logging
