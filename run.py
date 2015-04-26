@@ -100,7 +100,7 @@ def route_meal_points_per_day(version):
 @app.route(END_POINT + 'createuser', methods=['GET', 'HEAD'])
 def route_create_user(version):
     if request.method == 'GET' and request.args:
-        credentials = services.getcredentials.get_credentials(request)
+        credentials = services.getcredentials.get_credentials(request.args)
         return services.getcouchdb.create_user(credentials[0], version)
     else:
         return "Create user endpoint is working."
