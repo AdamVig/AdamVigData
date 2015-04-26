@@ -143,6 +143,10 @@ def log_request(response):
         app.logger.exception(log)
     return response
 
+@app.errorhandler(500)
+def handle_500_error(err):
+    return "500 Internal Server Error"
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
