@@ -24,9 +24,12 @@ def get_user(username, db=get_couch_db()):
 
 def save_user(user, db=get_couch_db()):
     """Save user in database or update existing user"""
-
-    user = db.save(user)
-    return user
+    try:
+        updated_user = db.save(user)
+    except couchdb.ResourceConflict as err:
+        print "Document updated conflict on " + user.get('_id')
+    else:
+        return updated_user
 
 def log_usage(username, data_type, app_version):
     """Log usage"""
