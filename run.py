@@ -140,7 +140,7 @@ def log_request(response):
     if response.status_code == 200:
         app.logger.info(log)
     else:
-        app.logger.exception(log)
+        app.logger.error(log)
     return response
 
 @app.errorhandler(500)
