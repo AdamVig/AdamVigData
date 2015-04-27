@@ -1,4 +1,5 @@
 from api import *
+from config import *
 import newrelic.agent, sys, os, logging
 from flask import jsonify
 from logging import Formatter, StreamHandler
@@ -7,13 +8,10 @@ from logging.handlers import SysLogHandler
 newrelic.agent.initialize('newrelic.ini')
 
 os.environ['TZ'] = 'US/Eastern'
-LOG_FORMAT = '[%(asctime)s] %(levelname)s: %(message)s'
-DATE_FORMAT = "%b %d %I:%M:%S %p"
-END_POINT = '/gocostudent/<version>/'
 
 # Initialize request-level logging
 streamhandler = StreamHandler(sys.stdout)
-sysloghandler = SysLogHandler(address=('logs2.papertrailapp.com', 26735))
+sysloghandler = SysLogHandler(address=(PAPERTRAIL_URL, PAPERTRAIL_PORT))
 formatter = Formatter(LOG_FORMAT, DATE_FORMAT)
 streamhandler.setFormatter(formatter)
 sysloghandler.setFormatter(formatter)
@@ -49,7 +47,7 @@ def get_data(getter, request_info):
 
         return jsonify(data)
 
-@app.route(END_POINT + 'chapelcredits', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'HEAD'])
 def route_chapel_credits(version):
     if request.method == 'GET' and request.args:
         request_info = {
@@ -61,7 +59,7 @@ def route_chapel_credits(version):
     else:
         return "Chapel credits endpoint is working."
 
-@app.route(END_POINT + 'mealpoints', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'mealpoints', methods=['GET', 'HEAD'])
 def route_meal_points(version):
     if request.method == 'GET' and request.args:
         request_info = {
@@ -73,7 +71,7 @@ def route_meal_points(version):
     else:
         return "Meal points endpoint is working."
 
-@app.route(END_POINT + 'daysleftinsemester', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'daysleftinsemester', methods=['GET', 'HEAD'])
 def route_days_left_in_semester(version):
     if request.method == 'GET' and request.args:
         request_info = {
@@ -85,7 +83,7 @@ def route_days_left_in_semester(version):
     else:
         return "Days left in semester endpoint is working."
 
-@app.route(END_POINT + 'mealpointsperday', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'mealpointsperday', methods=['GET', 'HEAD'])
 def route_meal_points_per_day(version):
     if request.method == 'GET' and request.args:
         request_info = {
@@ -97,7 +95,7 @@ def route_meal_points_per_day(version):
     else:
         return "Meal points per day endpoint is working."
 
-@app.route(END_POINT + 'createuser', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'HEAD'])
 def route_create_user(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request.args)
@@ -105,12 +103,12 @@ def route_create_user(version):
     else:
         return "Create user endpoint is working."
 
-@app.route(END_POINT + 'appinfo', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'appinfo', methods=['GET', 'HEAD'])
 def route_app_info(version):
     app_info = services.getcouchdb.get_app_info()
     return jsonify(app_info)
 
-@app.route(END_POINT + 'user/<username>', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'user/<username>', methods=['GET', 'HEAD'])
 def route_user(version, username):
     try:
         user = services.getcouchdb.get_user(username)
