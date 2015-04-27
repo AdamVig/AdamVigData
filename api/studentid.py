@@ -23,7 +23,7 @@ def get_student_id(username, password):
     print response.text
     return
 
-    if browser.response().code() == 200:
+    if browser.response().code() == httplib.OK:
         page = BeautifulSoup(browser.response().read())
 
         student_id = page          \

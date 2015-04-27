@@ -1,4 +1,4 @@
-import mechanize, urllib2
+import mechanize, urllib2, httplib
 from bs4 import BeautifulSoup
 
 def get_chapel_credits(username, password):
@@ -14,19 +14,22 @@ def get_chapel_credits(username, password):
         browser.open(url)
 
     except urllib2.HTTPError as err:
-        if err.code == 401:
-            raise ValueError("Username and password do not match.", 401)
+        if err.code == httplib.UNAUTHORIZED:
+            raise ValueError("Username and password do not match.",
+                httplib.UNAUTHORIZED)
         else:
-            raise ValueError("HTTPError: Chapel credits are unavailable.", 500)
+            raise ValueError("HTTPError: Chapel credits are unavailable.",
+                httplib.INTERNAL_SERVER_ERROR)
 
     except Exception as err:
-        raise ValueError("Chapel credits are unavailable.", 500)
+        raise ValueError("Chapel credits are unavailable.",
+            httplib.INTERNAL_SERVER_ERROR)
 
     else:
         response = browser.response().read()
 
     if "No Christian Life and Worship Credit Found" in response:
-        raise ValueError("No chapel credits found.", 404)
+        raise ValueError("No chapel credits found.", httplib.NOT_FOUND)
 
     # Find chapel credits on page
     page = BeautifulSoup(response)
