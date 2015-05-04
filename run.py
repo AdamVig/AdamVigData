@@ -1,6 +1,6 @@
 from api import *
 from config import *
-import newrelic.agent, sys, os, logging
+import newrelic.agent, sys, os, logging, httplib
 from flask import jsonify
 from logging import Formatter, StreamHandler
 from logging.handlers import SysLogHandler
@@ -28,7 +28,7 @@ def get_data(getter, request_info):
     try:
         credentials = services.getcredentials.get_credentials(request_info.get('args'))
     except ValueError as err:
-        return app.make_response((err.message, 400))
+        return app.make_response((err.message, httplib.BAD_REQUEST))
 
     # Get data
     try:
@@ -37,7 +37,7 @@ def get_data(getter, request_info):
         if len(err.args) == 2:
             return app.make_response((err.args[0], err.args[1]))
         else:
-            return app.make_response((err.message, 500))
+            return app.make_response((err.message, httplib.INTERNAL_SERVER_ERROR))
     else:
         # Log usage
         services.getcouchdb.log_usage(credentials[0],
@@ -129,18 +129,18 @@ def route_default():
 @app.before_request
 def before_request():
     if 'gocostudent' not in request.url:
-        return app.make_response(("Resource not found.", 404))
+        return app.make_response(("Resource not found.", httplib.NOT_FOUND))
 
 @app.after_request
 def log_request(response):
     log = services.log.create_log(request, response)
-    if response.status_code == 200:
+    if response.status_code == httplib.OK:
         app.logger.info(log)
     else:
         app.logger.error(log)
     return response
 
-@app.errorhandler(500)
+@app.errorhandler(httplib.INTERNAL_SERVER_ERROR)
 def handle_500_error(err):
     return "500 Internal Server Error"
 
