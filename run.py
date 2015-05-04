@@ -6,13 +6,12 @@ from logging import Formatter, StreamHandler
 from logging.handlers import SysLogHandler
 
 newrelic.agent.initialize('newrelic.ini')
-
 os.environ['TZ'] = 'US/Eastern'
 
-# Initialize request-level logging
+# Initialize logging
 streamhandler = StreamHandler(sys.stdout)
 sysloghandler = SysLogHandler(address=(PAPERTRAIL_URL, PAPERTRAIL_PORT))
-formatter = Formatter(LOG_FORMAT, DATE_FORMAT)
+formatter = Formatter(LOG_FORMAT)
 streamhandler.setFormatter(formatter)
 sysloghandler.setFormatter(formatter)
 app.logger.addHandler(sysloghandler)
