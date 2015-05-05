@@ -43,7 +43,8 @@ def get_data(getter, request_info):
         # Log usage
         services.db.log_usage(credentials[0],
             request_info.get('endpoint'),
-            request_info.get('version'))
+            request_info.get('version'),
+            data)
 
         return jsonify(data)
 

@@ -32,8 +32,8 @@ def save_user(user, db=get_db()):
     else:
         return updated_user
 
-def log_usage(username, data_type, app_version):
-    """Log usage"""
+def log_usage(username, data_type, app_version, data):
+    """Log usage and cache data"""
 
     db = get_db()
 
@@ -44,9 +44,8 @@ def log_usage(username, data_type, app_version):
         create_user(username, app_version)
     # User exists
     else:
+        # Increment or create number of requests for data type
         if 'dataRequests' in user:
-
-            # Increment or create number of requests for data type
             if data_type in user['dataRequests']:
                 user['dataRequests'][data_type] += 1
             else:
@@ -61,10 +60,18 @@ def log_usage(username, data_type, app_version):
         # Set app version
         user['appVersion'] = app_version
 
+        # Increment total logins
         if 'totalLogins' in user:
             user['totalLogins'] += 1
         else:
             user['totalLogins'] = 1
+
+        # Cache data
+        if 'dataCache' in user:
+            user['dataCache'][data_type] = data['data'];
+        else:
+            user['dataCache'] = {}
+            user['dataCache'][data_type] = data['data'];
 
         try:
             save_user(user, db)
