@@ -1,4 +1,4 @@
-import unittest, httplib, getpass, base64
+import unittest, httplib, getpass, base64, json
 from run import *
 
 class AdamVigAPITestCase(unittest.TestCase):
@@ -32,6 +32,12 @@ class AdamVigAPITestCase(unittest.TestCase):
 
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
+        else:
+
 
     def test_chapel_credits(self):
         end_point = 'chapelcredits'
@@ -40,6 +46,10 @@ class AdamVigAPITestCase(unittest.TestCase):
 
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.OK)
+        try:
+          json.loads(response.data)
+        except ValueError:
+          self.fail("Data is not valid JSON: " + response.data)
 
     def test_meal_points(self):
         end_point = 'mealpoints'
@@ -48,6 +58,10 @@ class AdamVigAPITestCase(unittest.TestCase):
 
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
 
     def test_days_left_in_semester(self):
         end_point = 'daysleftinsemester'
@@ -56,6 +70,10 @@ class AdamVigAPITestCase(unittest.TestCase):
 
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
 
     def test_mealpoints_per_day(self):
         end_point = 'mealpointsperday'
@@ -64,6 +82,10 @@ class AdamVigAPITestCase(unittest.TestCase):
 
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
 
     def test_chapel_credits_baduser(self):
         end_point = 'chapelcredits'
