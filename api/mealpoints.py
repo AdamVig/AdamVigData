@@ -1,12 +1,11 @@
 import mechanize, httplib
-from services import loginmygordon
 from bs4 import BeautifulSoup
 
 def get_meal_points(username, password):
     """Get meal points from My Gordon"""
 
     # Login
-    browser = loginmygordon.login_my_gordon(
+    browser = login_my_gordon(
         username, password, mechanize.Browser())
 
     # Check for invalid login
@@ -70,3 +69,17 @@ def parse_meal_points(meal_points):
     meal_points = round(meal_points, num_digits)
 
     return meal_points
+
+def login_my_gordon(username, password, browser):
+    """Login to My.Gordon.edu with given credentials
+    Returns browser instance
+    """
+
+    browser.open("https://my.gordon.edu/ics")
+
+    browser.select_form(name="MAINFORM")
+    browser['userName'] = username
+    browser['password'] = password
+    browser.submit()
+
+    return browser
