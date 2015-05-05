@@ -42,34 +42,35 @@ def log_usage(username, data_type, app_version):
     # User does not exist
     except ValueError as err:
         create_user(username, app_version)
+    # User exists
+    else:
+        if 'dataRequests' in user:
 
-    if 'dataRequests' in user:
-
-        # Increment or create number of requests for data type
-        if data_type in user['dataRequests']:
-            user['dataRequests'][data_type] += 1
+            # Increment or create number of requests for data type
+            if data_type in user['dataRequests']:
+                user['dataRequests'][data_type] += 1
+            else:
+                user['dataRequests'][data_type] = 1
         else:
+            user['dataRequests'] = {}
             user['dataRequests'][data_type] = 1
-    else:
-        user['dataRequests'] = {}
-        user['dataRequests'][data_type] = 1
 
-    # Set last login time to now
-    user['lastLogin'] = getdate.get_date()
+        # Set last login time to now
+        user['lastLogin'] = getdate.get_date()
 
-    # Set app version
-    user['appVersion'] = app_version
+        # Set app version
+        user['appVersion'] = app_version
 
-    if 'totalLogins' in user:
-        user['totalLogins'] += 1
-    else:
-        user['totalLogins'] = 1
+        if 'totalLogins' in user:
+            user['totalLogins'] += 1
+        else:
+            user['totalLogins'] = 1
 
-    try:
-        save_user(user, db)
-    except couchdb.ResourceConflict as err:
-        print "Could not log usage due to document update conflict on " + \
-            user.get('id')
+        try:
+            save_user(user, db)
+        except couchdb.ResourceConflict as err:
+            print "Could not log usage due to document update conflict on " + \
+                user.get('id')
 
 
 def create_user(username, app_version):
@@ -80,7 +81,7 @@ def create_user(username, app_version):
     try:
         get_user(username, db)
     # User does not exist
-    except couchdb.ResourceConflict as err:
+    except ValueError as err:
         user = {
             '_id': username,
             'firstLogin': getdate.get_date(),
