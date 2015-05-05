@@ -1,29 +1,41 @@
-import requests, json, mechanize
+import requests, json, mechanize, httplib, urllib2
 from bs4 import BeautifulSoup
 
 def get_student_id(username, password):
     """Get student id from Go Gordon"""
 
-    # browser = mechanize.Browser()
-    # browser.set_handle_robots(False)
-    # browser.addheaders.append(('Authorization', 'Basic %s' % (username, password)))
-    #
-    # url = 'go.gordon.edu/lib/auth/level3logon.cfm?action=logon&password=122395IatW'
-    # browser.open('https://' + username + ':' + password + '@' + url)
-    # browser.select_form(name="form1")
-    # browser['password'] = password
-    # browser.submit()
-    # print browser.response().read()
-    # return
+    auth_url = 'http://go.gordon.edu/lib/auth/level3logon.cfm'
+    whoami_url = 'http://go.gordon.edu/general/whoami.cfm'
 
-    print "reached"
-    # url = 'go.gordon.edu/general/whoami.cfm'
-    url = 'go.gordon.edu/lib/auth/level3logon.cfm?action=logon&password=122395IatW'
-    response = requests.get('https://' + username + ':' + password + '@' + url)
-    print response.text
-    return
+    # Initialize browser
+    browser = mechanize.Browser()
+    browser.set_handle_robots(False)
 
-    if browser.response().code() == httplib.OK:
+    # Add page authentication
+    browser.add_password(whoami_url, username, password)
+    browser.add_password(auth_url, username, password)
+
+    # Get page
+    try:
+        browser.open(whoami_url)
+    except urllib2.HTTPError as err:
+        if err.code == httplib.UNAUTHORIZED:
+            raise ValueError("Username and password do not match.",
+                httplib.UNAUTHORIZED)
+        else:
+            raise ValueError("HTTPError: Student ID is unavailable.",
+                httplib.INTERNAL_SERVER_ERROR)
+
+    except Exception as err:
+        raise ValueError("Student ID is unavailable.",
+            httplib.INTERNAL_SERVER_ERROR)
+
+    # Submit authentication form
+    browser.select_form(name="form1")
+    browser['password'] = password
+    browser.submit()
+
+    if browser.response().code == httplib.OK:
         page = BeautifulSoup(browser.response().read())
 
         student_id = page          \
@@ -36,9 +48,3 @@ def get_student_id(username, password):
 
     else:
         return response.status_code
-
-def serve_student_id(request, credentials):
-    """Serve student id in JSON format"""
-
-    student_id = get_student_id(credentials[0], credentials[1])
-    return json.dumps(student_id)
