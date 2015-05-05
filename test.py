@@ -200,6 +200,41 @@ class AdamVigAPITestCase(unittest.TestCase):
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
 
+    #############
+    # NEXT MEAL #
+    #############
+
+    def test_next_meal(self):
+        end_point = 'nextmeal'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.username, password=self.password)
+
+        print "Test next meal: "
+        response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
+        self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
+
+    def test_next_meal_baduser(self):
+        end_point = 'nextmeal'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.bad_username, password=self.password)
+
+        print "Test next meal (bad user): "
+        response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
+        self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
+
+    def test_next_meal_badpass(self):
+        end_point = 'nextmeal'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.username, password=self.bad_password)
+
+        print "Test next meal (bad pass): "
+        response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
+        self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
+
 
 if __name__ == '__main__':
     unittest.main()

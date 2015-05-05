@@ -8,6 +8,7 @@ from chapelcredits import *
 from daysleftinsemester import *
 from mealpoints import *
 from mealpointsperday import *
+from nextmeal import *
 from studentid import *
 
 app = Flask(__name__)
