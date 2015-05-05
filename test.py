@@ -6,7 +6,10 @@ class AdamVigAPITestCase(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         if not app.config['TESTING']:
-            raw_input('Set testing to True in config.py and restart this script.')
+            print '-----------------------------------'
+            print 'Set testing to True in config.py and restart this script.'
+            print '-----------------------------------'
+            raise SystemExit(0)
         self.app = app.test_client()
         self.app_name = 'gocostudent'
         self.version = '2.1.5'
