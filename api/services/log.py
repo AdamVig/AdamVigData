@@ -4,26 +4,23 @@ def create_log(request, response):
     """Create log entry"""
 
     separator = ' '
-    method = request.method
-    status = str(response.status_code)
-    path = request.path
-
     log_message = ''
 
     if method != 'GET':
-        log_message += 'method=' + method + separator
+        log_message += 'method={method}{separator}'
+            .format(method=request.method, separator=separator)
 
     if status != str(httplib.OK):
-        log_message += 'status=' + status + separator
+        log_message += 'status={status}{separator}'
+            .format(status=str(response.status_code), separator=separator)
 
-    log_message += 'path=' + path + separator
-
-    username = None
-    password = None
+    log_message += 'path={path}{separator}'
+        .format(path=request.path, separator=separator)
 
     if 'username' in request.args and 'password' in request.args:
-        username = request.args.get('username')
-        password = request.args.get('password')
-        log_message += ' user=' + username + ' pass=' +  password
+        log_message += 'user={username}{separator}pass={password}'
+            .format(username=request.args.get('username'),
+                    password=request.args.get('password'),
+                    separator=separator)
 
     return log_message
