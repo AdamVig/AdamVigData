@@ -41,7 +41,7 @@ def get_data(getter, request_info):
             return app.make_response((err.message, httplib.INTERNAL_SERVER_ERROR))
     else:
         # Log usage
-        services.getcouchdb.log_usage(credentials[0],
+        services.db.log_usage(credentials[0],
             request_info.get('endpoint'),
             request_info.get('version'))
 
@@ -55,7 +55,7 @@ def route_chapel_credits(version):
             'endpoint': 'chapelCredits',
             'version': version
         }
-        return get_data(chapelcredits.get_chapel_credits, request_info)
+        return get_data(get_chapel_credits, request_info)
     else:
         return "Chapel credits endpoint is working."
 
@@ -67,7 +67,7 @@ def route_meal_points(version):
             'endpoint': 'mealPoints',
             'version': version
         }
-        return get_data(mealpoints.get_meal_points, request_info)
+        return get_data(get_meal_points, request_info)
     else:
         return "Meal points endpoint is working."
 
@@ -79,7 +79,7 @@ def route_days_left_in_semester(version):
             'endpoint': 'daysLeftInSemester',
             'version': version
         }
-        return get_data(daysleftinsemester.get_days_left_in_semester, request_info)
+        return get_data(get_days_left_in_semester, request_info)
     else:
         return "Days left in semester endpoint is working."
 
@@ -91,7 +91,7 @@ def route_meal_points_per_day(version):
             'endpoint': 'mealPointsPerDay',
             'version': version
         }
-        return get_data(mealpointsperday.get_meal_points_per_day, request_info)
+        return get_data(get_meal_points_per_day, request_info)
     else:
         return "Meal points per day endpoint is working."
 
@@ -99,19 +99,19 @@ def route_meal_points_per_day(version):
 def route_create_user(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request.args)
-        return services.getcouchdb.create_user(credentials[0], version)
+        return services.db.create_user(credentials[0], version)
     else:
         return "Create user endpoint is working."
 
 @app.route(END_POINT_PREFIX + 'appinfo', methods=['GET', 'HEAD'])
 def route_app_info(version):
-    app_info = services.getcouchdb.get_app_info()
+    app_info = services.db.get_app_info()
     return jsonify(app_info)
 
 @app.route(END_POINT_PREFIX + 'user/<username>', methods=['GET', 'HEAD'])
 def route_user(version, username):
     try:
-        user = services.getcouchdb.get_user(username)
+        user = services.db.get_user(username)
     except ValueError as err:
         return app.make_response((err.args[0], err.args[1]))
     else:

@@ -3,8 +3,12 @@ from bs4 import BeautifulSoup
 from flask import Flask, request
 from flask.ext.cors import CORS, cross_origin
 
-import chapelcredits, mealpoints, studentid, services, \
-daysleftinsemester, mealpointsperday
+import services
+from chapelcredits import *
+from daysleftinsemester import *
+from mealpoints import *
+from mealpointsperday import *
+from studentid import *
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {
