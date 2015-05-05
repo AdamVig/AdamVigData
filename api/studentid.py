@@ -29,13 +29,12 @@ def get_student_id(username, password):
     except Exception as err:
         raise ValueError("Student ID is unavailable.",
             httplib.INTERNAL_SERVER_ERROR)
+    else:
+        # Submit authentication form
+        browser.select_form(name="form1")
+        browser['password'] = password
+        browser.submit()
 
-    # Submit authentication form
-    browser.select_form(name="form1")
-    browser['password'] = password
-    browser.submit()
-
-    if browser.response().code == httplib.OK:
         page = BeautifulSoup(browser.response().read())
 
         student_id = page          \
@@ -44,7 +43,4 @@ def get_student_id(username, password):
             .find_all('td')[-1]    \
             .text
 
-        return { 'data': student_id }
-
-    else:
-        return response.status_code
+        return { 'data': int(student_id) }
