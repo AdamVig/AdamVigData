@@ -95,6 +95,18 @@ def route_meal_points_per_day(version):
     else:
         return "Meal points per day endpoint is working."
 
+@app.route(END_POINT_PREFIX + 'studentid', methods=['GET', 'HEAD'])
+def route_student_id(version):
+    if request.method == 'GET' and request.args:
+        request_info = {
+            'args': request.args,
+            'endpoint': 'studentID',
+            'version': version
+        }
+        return get_data(get_student_id, request_info)
+    else:
+        return "Student ID endpoint is working."
+
 @app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'HEAD'])
 def route_create_user(version):
     if request.method == 'GET' and request.args:
