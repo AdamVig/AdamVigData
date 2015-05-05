@@ -5,7 +5,8 @@ from flask import jsonify
 from logging import Formatter, StreamHandler
 from logging.handlers import SysLogHandler
 
-newrelic.agent.initialize('newrelic.ini')
+if not app.config.get('TESTING'):
+    newrelic.agent.initialize('newrelic.ini')
 os.environ['TZ'] = 'US/Eastern'
 
 # Initialize logging

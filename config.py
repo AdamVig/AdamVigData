@@ -1,5 +1,6 @@
 # Allow for local development
 DEBUG = False
+TESTING = False
 
 PAPERTRAIL_URL = 'logs2.papertrailapp.com'
 PAPERTRAIL_PORT = 26735
