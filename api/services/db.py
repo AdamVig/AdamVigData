@@ -70,7 +70,7 @@ def log_usage(username, data_type, app_version):
             save_user(user, db)
         except couchdb.ResourceConflict as err:
             print "Could not log usage due to document update conflict on " + \
-                user.get('id')
+                user.get('_id')
 
 
 def create_user(username, app_version):
