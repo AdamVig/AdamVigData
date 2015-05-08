@@ -20,10 +20,9 @@ def create_log(request, response):
     log_message += 'path={path}{separator}' \
         .format(path=path, separator=separator)
 
-    if 'username' in request.args and 'password' in request.args:
-        log_message += 'user={username}{separator}pass={password}' \
+    if 'username' in request.args:
+        log_message += 'user={username}{separator}' \
             .format(username=request.args.get('username'), \
-                    password=request.args.get('password'), \
                     separator=separator)
 
     return log_message
