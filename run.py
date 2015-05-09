@@ -124,24 +124,12 @@ def route_next_meal(version):
 @app.route(END_POINT_PREFIX + 'checklogin', methods=['GET', 'HEAD'])
 def route_check_login(version):
     if request.method == 'GET' and request.args:
-        # Get username and password
-        try:
-            credentials = services.getcredentials.get_credentials(request.args)
-        except ValueError as err:
-            return app.make_response((err.message, httplib.BAD_REQUEST))
-
-        # Get data
-        try:
-            data = check_login(credentials[0], credentials[1])
-
-        # Invalid login or unknown error
-        except ValueError as err:
-            if len(err.args) == 2:
-                return app.make_response((err.args[0], err.args[1]))
-            else:
-                return app.make_response((err.message, httplib.INTERNAL_SERVER_ERROR))
-        else:
-            return jsonify(data)
+        request_info = {
+            'args': request.args,
+            'endpoint': 'checkLogin',
+            'version': version
+        }
+        return get_data(check_login, request_info, log=False)
     else:
         return "Check login endpoint is working."
 
