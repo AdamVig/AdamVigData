@@ -1,4 +1,4 @@
-import mechanize, urllib2, httplib
+import services, mechanize, httplib
 from bs4 import BeautifulSoup
 
 def get_chapel_credits(username, password):
@@ -6,25 +6,14 @@ def get_chapel_credits(username, password):
 
     # Retrieve page
     url = 'https://go.gordon.edu/student/chapelcredits/viewattendance.cfm'
-    browser = mechanize.Browser()
-    browser.set_handle_robots(False)
-    browser.add_password(url, username, password)
 
     try:
-        browser.open(url)
-
-    except urllib2.HTTPError as err:
-        if err.code == httplib.UNAUTHORIZED:
-            raise ValueError("Username and password do not match.",
-                httplib.UNAUTHORIZED)
-        else:
-            raise ValueError("HTTPError: Chapel credits are unavailable.",
-                httplib.INTERNAL_SERVER_ERROR)
-
-    except Exception as err:
-        raise ValueError("Chapel credits are unavailable.",
-            httplib.INTERNAL_SERVER_ERROR)
-
+        browser = services.logingogordon.login_go_gordon(url,
+            username,
+            password,
+            reauthenticate=False)
+    except ValueError as err:
+        raise ValueError("Chapel credits error: " + err[0], err[1])
     else:
         response = browser.response().read()
 

@@ -1,40 +1,20 @@
-import requests, json, mechanize, httplib, urllib2
+import services, mechanize, httplib
 from bs4 import BeautifulSoup
 
 def get_student_id(username, password):
     """Get student id from Go Gordon"""
 
-    auth_url = 'http://go.gordon.edu/lib/auth/level3logon.cfm'
-    whoami_url = 'http://go.gordon.edu/general/whoami.cfm'
-
-    # Initialize browser
-    browser = mechanize.Browser()
-    browser.set_handle_robots(False)
-
-    # Add page authentication
-    browser.add_password(whoami_url, username, password)
-    browser.add_password(auth_url, username, password)
+    url = 'http://go.gordon.edu/general/whoami.cfm'
 
     # Get page
     try:
-        browser.open(whoami_url)
-    except urllib2.HTTPError as err:
-        if err.code == httplib.UNAUTHORIZED:
-            raise ValueError("Username and password do not match.",
-                httplib.UNAUTHORIZED)
-        else:
-            raise ValueError("HTTPError: Student ID is unavailable.",
-                httplib.INTERNAL_SERVER_ERROR)
-
-    except Exception as err:
-        raise ValueError("Student ID is unavailable.",
-            httplib.INTERNAL_SERVER_ERROR)
+        browser = services.logingogordon.login_go_gordon(url,
+            username,
+            password,
+            reauthenticate=True)
+    except ValueError as err:
+        raise ValueError("Student ID error: " + err[0], err[1])
     else:
-        # Submit authentication form
-        browser.select_form(name="form1")
-        browser['password'] = password
-        browser.submit()
-
         page = BeautifulSoup(browser.response().read())
 
         student_id = page          \
@@ -43,4 +23,9 @@ def get_student_id(username, password):
             .find_all('td')[-1]    \
             .text
 
-        return { 'data': int(student_id) }
+        try:
+            student_id = int(student_id)
+        except ValueError as err:
+            raise ValueError("Could not find student ID.", httplib.NOT_FOUND)
+
+        return { 'data': student_id }
