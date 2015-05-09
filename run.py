@@ -157,15 +157,6 @@ def route_app_info(version):
     app_info = services.db.get_app_info()
     return jsonify(app_info)
 
-@app.route(END_POINT_PREFIX + 'user/<username>', methods=['GET', 'HEAD'])
-def route_user(version, username):
-    try:
-        user = services.db.get_user(username)
-    except ValueError as err:
-        return app.make_response((err.args[0], err.args[1]))
-    else:
-        return jsonify(user)
-
 @app.route('/<appname>/<version>', methods=['GET'])
 def route_app(appname=None, version=None):
     return "The app server is running correctly for " + \
