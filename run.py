@@ -109,6 +109,18 @@ def route_student_id(version):
     else:
         return "Student ID endpoint is working."
 
+@app.route(END_POINT_PREFIX + 'studentinfo', methods=['GET', 'HEAD'])
+def route_student_info(version):
+    if request.method == 'GET' and request.args:
+        request_info = {
+            'args': request.args,
+            'endpoint': 'studentInfo',
+            'version': version
+        }
+        return get_data(get_student_info, request_info, log=False)
+    else:
+        return "Student info endpoint is working."
+
 @app.route(END_POINT_PREFIX + 'nextmeal', methods=['GET', 'HEAD'])
 def route_next_meal(version):
     if request.method == 'GET' and request.args:
