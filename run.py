@@ -19,7 +19,7 @@ app.logger.addHandler(sysloghandler)
 app.logger.addHandler(streamhandler)
 app.logger.setLevel(logging.INFO)
 
-def get_data(getter, request_info):
+def get_data(getter, request_info, log=True):
     """Retrieve data
     getter : function to get data with
     request_info : contains credentials, endpoint name, and API version
@@ -40,11 +40,12 @@ def get_data(getter, request_info):
         else:
             return app.make_response((err.message, httplib.INTERNAL_SERVER_ERROR))
     else:
-        # Log usage
-        services.db.log_usage(credentials[0],
-            request_info.get('endpoint'),
-            request_info.get('version'),
-            data)
+        if log == True:
+            # Log usage
+            services.db.log_usage(credentials[0],
+                request_info.get('endpoint'),
+                request_info.get('version'),
+                data)
 
         return jsonify(data)
 
