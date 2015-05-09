@@ -235,6 +235,41 @@ class AdamVigAPITestCase(unittest.TestCase):
         response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
         self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
 
+    ##############
+    # CHECK USER #
+    ##############
+
+    def test_check_login(self):
+        end_point = 'checklogin'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.username, password=self.password)
+
+        print "Test check login: "
+        response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
+        self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
+
+    def test_check_login_baduser(self):
+        end_point = 'checklogin'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.bad_username, password=self.password)
+
+        print "Test check login (bad user): "
+        response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
+        self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
+
+    def test_check_login_badpass(self):
+        end_point = 'checklogin'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.username, password=self.bad_password)
+
+        print "Test check login (bad pass): "
+        response = self.app.get(self.end_point_prefix + '/' + end_point + credentials)
+        self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
+
 
 if __name__ == '__main__':
     unittest.main()

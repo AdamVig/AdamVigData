@@ -5,6 +5,7 @@ from flask.ext.cors import CORS, cross_origin
 
 import services
 from chapelcredits import *
+from checklogin import *
 from daysleftinsemester import *
 from mealpoints import *
 from mealpointsperday import *
