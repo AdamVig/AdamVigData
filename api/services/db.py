@@ -1,11 +1,12 @@
+from config import *
 import couchdb, getdate
 
 def get_db():
     """Get Couch database from server"""
 
-    auth = "arkincesselsesentemblefo:BUeaRWc0yVBD2wMINyKrgNiy@"
-    server = couchdb.Server("https://" + auth + "adamvig.cloudant.com/")
-    db = server['gocostudent']
+    auth = COUCH_USER + ":" + COUCH_PASS + "@"
+    server = couchdb.Server("https://" + auth + COUCH_SERVER)
+    db = server[COUCH_DB_NAME]
     return db
 
 def get_app_info(db=get_db()):

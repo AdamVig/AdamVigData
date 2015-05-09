@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, request
 from flask.ext.cors import CORS, cross_origin
 
-import services
+import config, services
 from chapelcredits import *
 from checklogin import *
 from daysleftinsemester import *
