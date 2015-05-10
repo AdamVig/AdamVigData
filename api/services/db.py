@@ -21,7 +21,7 @@ def get_user(username, db=get_db()):
     if user is not None:
         return user
     else:
-        raise ValueError("User does not exist.", 404)
+        raise ValueError("User does not exist.", httplib.NOT_FOUND)
 
 def save_user(user, db=get_db()):
     """Save user in database or update existing user"""
