@@ -1,5 +1,5 @@
 from config import *
-import couchdb, getdate
+import couchdb, getdate, httplib
 
 def get_db():
     """Get Couch database from server"""
@@ -99,7 +99,9 @@ def create_user(username, app_version):
             'dataRequests': {}
         }
         save_user(user, db)
-        return "User created."
+        return {
+            'data': user
+        }
     # User already exists
     else:
-        return "Cannot create user because user already exists."
+        raise ValueError("User already exists.", httplib.CONFLICT)

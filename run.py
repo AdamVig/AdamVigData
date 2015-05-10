@@ -149,7 +149,16 @@ def route_check_login(version):
 def route_create_user(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request.args)
-        return services.db.create_user(credentials[0], version)
+        try:
+            user = services.db.create_user(credentials[0], version)
+        except ValueError as err:
+            if len(err.args) == 2:
+                return app.make_response((err.args[0], err.args[1]))
+            else:
+                return app.make_response((err.message,
+                    httplib.INTERNAL_SERVER_ERROR))
+        else:
+            return jsonify(user)
     else:
         return "Create user endpoint is working."
 
