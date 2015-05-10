@@ -33,7 +33,7 @@ def save_user(user, db=get_db()):
     else:
         return updated_user
 
-def log_usage(username, data_type, app_version, data):
+def log_usage(username, data_type, app_version, data, shouldCache=True):
     """Log usage and cache data"""
 
     db = get_db()
@@ -67,18 +67,33 @@ def log_usage(username, data_type, app_version, data):
         else:
             user['totalLogins'] = 1
 
-        # Cache data
-        if 'dataCache' in user:
-            user['dataCache'][data_type] = data['data'];
-        else:
-            user['dataCache'] = {}
-            user['dataCache'][data_type] = data['data'];
+        # Cache data if caching is enabled for this data type
+        if shouldCache == True:
+            user = cache_data(user, data_type, data)
 
         try:
             save_user(user, db)
         except couchdb.ResourceConflict as err:
             print "Could not log usage due to document update conflict on " + \
                 user.get('_id')
+
+def cache_data(user, data_type, data):
+    """Cache requested data in user data"""
+
+    # Cache data in existing data cache field
+    if 'dataCache' in user:
+
+        # If user has not opted out
+        if not user['dataCache'] == False:
+            print "Caching user data!"
+            user['dataCache'][data_type] = data['data'];
+
+    # Create data cache field
+    else:
+        user['dataCache'] = {}
+        user['dataCache'][data_type] = data['data'];
+
+    return user
 
 
 def create_user(username, app_version):
