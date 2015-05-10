@@ -19,7 +19,7 @@ app.logger.addHandler(sysloghandler)
 app.logger.addHandler(streamhandler)
 app.logger.setLevel(logging.INFO)
 
-def get_data(getter, request_info, log=True):
+def get_data(getter, request_info, log=True, cache=True):
     """Retrieve data
     getter : function to get data with
     request_info : contains credentials, endpoint name, and API version
@@ -45,7 +45,8 @@ def get_data(getter, request_info, log=True):
             services.db.log_usage(credentials[0],
                 request_info.get('endpoint'),
                 request_info.get('version'),
-                data)
+                data,
+                cache)
 
         return jsonify(data)
 
@@ -81,7 +82,7 @@ def route_days_left_in_semester(version):
             'endpoint': 'daysLeftInSemester',
             'version': version
         }
-        return get_data(get_days_left_in_semester, request_info)
+        return get_data(get_days_left_in_semester, request_info, cache=False)
     else:
         return "Days left in semester endpoint is working."
 
@@ -117,7 +118,7 @@ def route_student_info(version):
             'endpoint': 'studentInfo',
             'version': version
         }
-        return get_data(get_student_info, request_info, log=False)
+        return get_data(get_student_info, request_info, cache=False)
     else:
         return "Student info endpoint is working."
 
@@ -129,7 +130,7 @@ def route_next_meal(version):
             'endpoint': 'nextMeal',
             'version': version
         }
-        return get_data(get_next_meal, request_info)
+        return get_data(get_next_meal, request_info, cache=False)
     else:
         return "Next meal endpoint is working."
 
@@ -141,7 +142,7 @@ def route_check_login(version):
             'endpoint': 'checkLogin',
             'version': version
         }
-        return get_data(check_login, request_info, log=False)
+        return get_data(check_login, request_info, log=False, cache=False)
     else:
         return "Check login endpoint is working."
 
