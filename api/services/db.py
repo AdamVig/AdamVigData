@@ -95,6 +95,18 @@ def cache_data(user, data_type, data):
 
     return user
 
+def disable_caching(username):
+    """Disable data caching in user data"""
+
+    try:
+        user  = get_user(username)
+        user['dataCache'] = False;
+    except ValueError as err:
+        raise ValueError("Could not disable caching; user does not exist.",
+            httplib.NOT_FOUND)
+    else:
+        return user
+
 
 def create_user(username, app_version):
     """Create new user in database"""

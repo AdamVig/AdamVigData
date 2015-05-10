@@ -146,6 +146,23 @@ def route_check_login(version):
     else:
         return "Check login endpoint is working."
 
+@app.route(END_POINT_PREFIX + 'disablecaching', methods=['GET', 'HEAD'])
+def route_disable_caching(version):
+    if request.method == 'GET' and request.args:
+        credentials = services.getcredentials.get_credentials(request.args)
+        try:
+            user = services.db.disable_caching(credentials[0])
+        except ValueError as err:
+            if len(err.args) == 2:
+                return app.make_response((err.args[0], err.args[1]))
+            else:
+                return app.make_response((err.message,
+                    httplib.INTERNAL_SERVER_ERROR))
+        else:
+            return jsonify(user)
+    else:
+        return "Disable caching endpoint is working."
+
 @app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'HEAD'])
 def route_create_user(version):
     if request.method == 'GET' and request.args:
