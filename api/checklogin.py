@@ -1,4 +1,4 @@
-import mechanize, urllib2, httplib
+import mechanize, urllib2, httplib, services
 
 def check_login(username, password):
     """Check login on Go Gordon"""
@@ -25,4 +25,9 @@ def check_login(username, password):
             httplib.INTERNAL_SERVER_ERROR)
 
     else:
-        return { 'data': "Valid login." }
+        try:
+            user = services.db.get_user(username)
+        except ValueError as err:
+            return "Valid login but user does not exist in database."
+        else:
+            return { 'data': user }
