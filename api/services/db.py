@@ -80,7 +80,7 @@ def log_usage(username, data_type, app_version, data, shouldCache=True):
 def cache_data(user, data_type, data):
     """Cache requested data in user data"""
 
-    # If user has not opted out
+    # If user has accepted/denied privacy policy
     if 'privacyPolicy' in user:
         if user['privacyPolicy'] == 'accepted':
 
@@ -93,6 +93,20 @@ def cache_data(user, data_type, data):
                 user['dataCache'] = {}
                 user['dataCache'][data_type] = data['data'];
 
+
+        elif user['privacyPolicy'] == 'denied':
+            user = remove_data_cache(user)
+
+    # If user has not seen privacy policy
+    else:
+        user = remove_data_cache(user)
+
+    return user
+
+def remove_data_cache(user):
+    """Remove data cache field from user"""
+
+    user.pop('dataCache', None)
     return user
 
 def set_property(username, property_name, value):
