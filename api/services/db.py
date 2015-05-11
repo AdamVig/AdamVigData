@@ -79,18 +79,19 @@ def log_usage(username, data_type, app_version, data, shouldCache=True):
 
 def cache_data(user, data_type, data):
     """Cache requested data in user data"""
-    
+
     # If user has not opted out
-    if not user['privacyPolicy'] == "denied":
+    if 'privacyPolicy' in user:
+        if user['privacyPolicy'] == 'accepted':
 
-        # Cache data in existing data cache field
-        if 'dataCache' in user:
-            user['dataCache'][data_type] = data['data'];
+            # Cache data in existing data cache field
+            if 'dataCache' in user:
+                user['dataCache'][data_type] = data['data'];
 
-        # Create data cache field
-        else:
-            user['dataCache'] = {}
-            user['dataCache'][data_type] = data['data'];
+            # Create data cache field
+            else:
+                user['dataCache'] = {}
+                user['dataCache'][data_type] = data['data'];
 
     return user
 
