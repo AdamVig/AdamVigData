@@ -79,24 +79,23 @@ def log_usage(username, data_type, app_version, data, shouldCache=True):
 
 def cache_data(user, data_type, data):
     """Cache requested data in user data"""
+    
+    # If user has not opted out
+    if not user['privacyPolicy'] == "denied":
 
-    # Cache data in existing data cache field
-    if 'dataCache' in user:
-
-        # If user has not opted out
-        if not user['dataCache'] == False:
-            print "Caching user data!"
+        # Cache data in existing data cache field
+        if 'dataCache' in user:
             user['dataCache'][data_type] = data['data'];
 
-    # Create data cache field
-    else:
-        user['dataCache'] = {}
-        user['dataCache'][data_type] = data['data'];
+        # Create data cache field
+        else:
+            user['dataCache'] = {}
+            user['dataCache'][data_type] = data['data'];
 
     return user
 
-def disable_caching(username):
-    """Disable data caching in user data"""
+def set_property(username, property_name, value):
+    """Set property in user data"""
 
     try:
         user  = get_user(username)
@@ -104,7 +103,7 @@ def disable_caching(username):
         raise ValueError("Could not disable caching; user does not exist.",
             httplib.NOT_FOUND)
     else:
-        user['dataCache'] = False;
+        user[property_name] = value;
         try:
             save_user(user)
         except couchdb.ResourceConflict as err:

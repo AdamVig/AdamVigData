@@ -146,12 +146,14 @@ def route_check_login(version):
     else:
         return "Check login endpoint is working."
 
-@app.route(END_POINT_PREFIX + 'disablecaching', methods=['GET', 'HEAD'])
-def route_disable_caching(version):
+@app.route(END_POINT_PREFIX + 'setproperty', methods=['GET', 'HEAD'])
+def route_set_property(version):
     if request.method == 'GET' and request.args:
         credentials = services.getcredentials.get_credentials(request.args)
+        property_name = request.args.get('property')
+        value = request.args.get('value')
         try:
-            user = services.db.disable_caching(credentials[0])
+            user = services.db.set_property(credentials[0], property_name, value)
         except ValueError as err:
             if len(err.args) == 2:
                 return app.make_response((err.args[0], err.args[1]))
@@ -161,7 +163,7 @@ def route_disable_caching(version):
         else:
             return jsonify(user)
     else:
-        return "Disable caching endpoint is working."
+        return "Set property endpoint is working."
 
 @app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'HEAD'])
 def route_create_user(version):
