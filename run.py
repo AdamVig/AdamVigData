@@ -106,7 +106,7 @@ def route_student_id(version):
             'endpoint': 'studentID',
             'version': version
         }
-        return get_data(get_student_id, request_info)
+        return get_data(get_student_id, request_info, cache=False)
     else:
         return "Student ID endpoint is working."
 
