@@ -106,7 +106,7 @@ def disable_caching(username):
     else:
         user['dataCache'] = False;
         try:
-            save_user(user, db)
+            save_user(user)
         except couchdb.ResourceConflict as err:
             print "Could not disable caching due to document update conflict on " + \
                 user.get('_id')
