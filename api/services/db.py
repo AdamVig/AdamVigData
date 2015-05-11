@@ -100,12 +100,18 @@ def disable_caching(username):
 
     try:
         user  = get_user(username)
-        user['dataCache'] = False;
     except ValueError as err:
         raise ValueError("Could not disable caching; user does not exist.",
             httplib.NOT_FOUND)
     else:
-        return user
+        user['dataCache'] = False;
+        try:
+            save_user(user, db)
+        except couchdb.ResourceConflict as err:
+            print "Could not disable caching due to document update conflict on " + \
+                user.get('_id')
+        else:
+            return user
 
 
 def create_user(username, app_version):
