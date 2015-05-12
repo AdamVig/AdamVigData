@@ -12,6 +12,7 @@ from mealpointsperday import *
 from nextmeal import *
 from studentid import *
 from studentinfo import *
+from temperature import *
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {

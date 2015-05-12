@@ -134,6 +134,18 @@ def route_next_meal(version):
     else:
         return "Next meal endpoint is working."
 
+@app.route(END_POINT_PREFIX + 'temperature', methods=['GET', 'HEAD'])
+def route_temperature(version):
+    if request.method == 'GET' and request.args:
+        request_info = {
+            'args': request.args,
+            'endpoint': 'temperature',
+            'version': version
+        }
+        return get_data(get_temperature, request_info, cache=False)
+    else:
+        return "Temperature endpoint is working."
+
 @app.route(END_POINT_PREFIX + 'checklogin', methods=['GET', 'HEAD'])
 def route_check_login(version):
     if request.method == 'GET' and request.args:
