@@ -11,4 +11,7 @@ def get_days_left_in_semester(username, password):
     delta = last_date - datetime.today()
     num_days = delta.days - 1
 
+    if num_days < 0:
+        num_days = 0;
+
     return { 'data': num_days }
