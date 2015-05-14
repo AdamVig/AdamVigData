@@ -1,5 +1,6 @@
 from mealpoints import get_meal_points
 from daysleftinsemester import get_days_left_in_semester
+import httplib
 
 def get_meal_points_per_day(username, password):
     """Get meal points per day"""
@@ -16,4 +17,4 @@ def get_meal_points_per_day(username, password):
         return { 'data': meal_points_per_day }
     else:
         raise ValueError("Meal points per day are not available", \
-            browser.response().code)
+            httplib.NOT_FOUND)
