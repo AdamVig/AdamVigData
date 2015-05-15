@@ -23,19 +23,22 @@ def get_chapel_credits(username, password):
     # Find chapel credits on page
     page = BeautifulSoup(response)
 
-    credit_table = page.find_all('table')[8]
+    try:
+        credit_table = page.find_all('table')[8]
+    except IndexError as err:
+        raise ValueError("No chapel credits found.", httplib.NOT_FOUND)
+    else:
+        credits = credit_table \
+            .find_all('tr')[0] \
+            .find_all('td')[1] \
+            .text
 
-    credits = credit_table \
-        .find_all('tr')[0] \
-        .find_all('td')[1] \
-        .text
+        required = credit_table \
+            .find_all('tr')[1]  \
+            .find_all('td')[1]  \
+            .text
 
-    required = credit_table \
-        .find_all('tr')[1]  \
-        .find_all('td')[1]  \
-        .text
-
-    return {
-        'data': int(credits),
-        'outof': int(required)
-    }
+        return {
+            'data': int(credits),
+            'outof': int(required)
+        }
