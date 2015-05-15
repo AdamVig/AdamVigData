@@ -1,6 +1,6 @@
 from api import *
 from config import *
-import newrelic.agent, sys, os, logging, httplib
+import newrelic.agent, sys, os, logging, httplib, traceback
 from flask import jsonify
 from logging import Formatter, StreamHandler
 from logging.handlers import SysLogHandler
@@ -38,7 +38,12 @@ def get_data(getter, request_info, log=True, cache=True):
         if len(err.args) == 2:
             return app.make_response((err.args[0], err.args[1]))
         else:
-            return app.make_response((err.message, httplib.INTERNAL_SERVER_ERROR))
+            return app.make_response((err.message,
+                httplib.INTERNAL_SERVER_ERROR))
+    except Exception as err:
+        print traceback.format_exc()
+        return app.make_response((err.message,
+            httplib.INTERNAL_SERVER_ERROR))
     else:
         if log == True:
             # Log usage
@@ -48,7 +53,11 @@ def get_data(getter, request_info, log=True, cache=True):
                 data,
                 cache)
 
-        return jsonify(data)
+        if isinstance(data, dict):
+            return jsonify(data)
+        else:
+            return app.make_response(("Data was not retrieved as dictionary.",
+                httplib.BAD_GATEWAY))
 
 @app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'HEAD'])
 def route_chapel_credits(version):
@@ -225,7 +234,8 @@ def log_request(response):
 
 @app.errorhandler(httplib.INTERNAL_SERVER_ERROR)
 def handle_500_error(err):
-    return "500 Internal Server Error"
+    return app.make_response(("Unhandled error in app.",
+        httplib.INTERNAL_SERVER_ERROR))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
