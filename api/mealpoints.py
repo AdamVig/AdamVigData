@@ -64,9 +64,8 @@ def parse_meal_points(meal_points):
     # Convert to float
     meal_points = float(meal_points)
 
-    # Round
-    num_digits = 2
-    meal_points = round(meal_points, num_digits)
+    # Round to nearest int
+    meal_points = int(meal_points)
 
     return meal_points
 
