@@ -9,8 +9,7 @@ def get_meal_points_per_day(username, password):
     days = get_days_left_in_semester(username, password).get('data')
 
     if meal_points > 0 and days > 0:
-        num_digits = 2
-        meal_points_per_day = round(meal_points / days, num_digits)
+        meal_points_per_day = meal_points / days
         return { 'data': meal_points_per_day }
     elif meal_points == 0 or days == 0:
         meal_points_per_day = 0
