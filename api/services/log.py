@@ -7,6 +7,7 @@ def create_log(request, response):
     log_message = ''
     method = request.method
     status = str(response.status_code)
+    response_data = response.data
     path = request.path
 
     if method != 'GET':
@@ -16,6 +17,8 @@ def create_log(request, response):
     if status != str(httplib.OK):
         log_message += 'status={status}{separator}' \
             .format(status=status, separator=separator)
+        log_message += 'error={error}{separator}' \
+            .format(error=response_data, separator=separator)
 
     log_message += 'path={path}{separator}' \
         .format(path=path, separator=separator)
