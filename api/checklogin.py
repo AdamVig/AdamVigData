@@ -1,4 +1,4 @@
-import mechanize, urllib2, httplib, requests, services
+import httplib, requests, services
 
 def check_login(username, password):
     """Check login on Go Gordon"""
