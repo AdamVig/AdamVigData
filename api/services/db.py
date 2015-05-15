@@ -34,7 +34,7 @@ def save_user(user, db=get_db()):
     else:
         return updated_user
 
-def log_usage(username, data_type, app_version, data, shouldCache=True):
+def log_usage(username, data_type, app_version, data, should_cache=True):
     """Log usage and cache data"""
 
     db = get_db()
@@ -69,7 +69,7 @@ def log_usage(username, data_type, app_version, data, shouldCache=True):
             user['totalLogins'] = 1
 
         # Cache data if caching is enabled for this data type
-        if shouldCache == True:
+        if should_cache == True:
             user = cache_data(user, data_type, data)
 
         try:
