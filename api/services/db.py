@@ -135,7 +135,7 @@ def create_user(username, app_version):
     db = get_db()
 
     try:
-        get_user(username, db)
+        user = get_user(username, db)
     # User does not exist
     except ValueError as err:
         user = {
@@ -147,9 +147,5 @@ def create_user(username, app_version):
             'dataRequests': {}
         }
         save_user(user, db)
-        return {
-            'data': user
-        }
-    # User already exists
-    else:
-        raise ValueError("User already exists.", httplib.CONFLICT)
+
+    return { 'data': user }
