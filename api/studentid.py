@@ -24,7 +24,7 @@ def get_student_id(username, password):
             .text
 
         try:
-            student_id = int(student_id)
+            student_id = student_id[:4] + ' ' + student_id[4:]
         except ValueError as err:
             raise ValueError("Could not find student ID.", httplib.NOT_FOUND)
 
