@@ -41,14 +41,17 @@ def get_meal_points(username, password):
 
         page = BeautifulSoup(browser.response().read())
 
-        meal_points = page        \
-            .find_all('table')[1] \
-            .find_all('tr')[0]    \
-            .find_all('td')[1]    \
-            .find('span')         \
-            .text
-
-        meal_points = parse_meal_points(meal_points)
+        try:
+            meal_points = page        \
+                .find_all('table')[1] \
+                .find_all('tr')[0]    \
+                .find_all('td')[1]    \
+                .find('span')         \
+                .text
+        except IndexError as err:
+            meal_points = 0
+        else:
+            meal_points = parse_meal_points(meal_points)
 
         return { 'data': meal_points }
 
