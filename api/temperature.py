@@ -1,5 +1,4 @@
 from config import *
-from keys import *
 import forecastio
 
 def get_temperature(username, password):

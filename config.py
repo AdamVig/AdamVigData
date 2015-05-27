@@ -13,3 +13,15 @@ PAPERTRAIL_PORT = 26735
 LOG_FORMAT = '[%(levelname)s] %(message)s'
 
 END_POINT_PREFIX = '/gocostudent/<version>/'
+
+# Get API keys either from local file or environment variables
+try:
+    import keys
+except ImportError as err:
+    COUCH_USER = os.environ.get('COUCH_USER')
+    COUCH_PASS = os.environ.get('COUCH_PASS')
+    FORECASTIO_API_KEY = os.environ.get('FORECASTIO_API_KEY')
+else:
+    COUCH_USER = keys.COUCH_USER
+    COUCH_PASS = keys.COUCH_PASS
+    FORECASTIO_API_KEY = keys.FORECASTIO_API_KEY

@@ -1,5 +1,4 @@
 from config import *
-from keys import *
 import couchdb, getdate, httplib
 
 def get_db():
