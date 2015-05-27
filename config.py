@@ -18,6 +18,7 @@ END_POINT_PREFIX = '/gocostudent/<version>/'
 try:
     import keys
 except ImportError as err:
+    import os
     COUCH_USER = os.environ.get('COUCH_USER')
     COUCH_PASS = os.environ.get('COUCH_PASS')
     FORECASTIO_API_KEY = os.environ.get('FORECASTIO_API_KEY')
