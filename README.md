@@ -183,3 +183,74 @@ There is one utility endpoint:
   exists
   - returns `401 UNAUTHORIZED` if login is invalid
   - average response time: 954ms
+
+## How to Run This App
+## 1. Clone this repository
+
+```
+cd [folder you want repository in]
+git clone https://github.com/AdamVig/AdamVigData AdamVigData
+```
+
+## 2. Set up your [Virtualenv](https://virtualenv.pypa.io/en/latest/)
+
+```
+virtualenv .env
+source .env/bin/activate
+pip install -r requirements.txt
+```
+
+### If Virtualenv is not installed
+
+```
+pip install virtualenv
+```
+
+### If pip is not installed
+Follow the installation instructions at [pip.pypa.io](https://pip.pypa.io/en/latest/installing.html#install-pip).
+
+## 3. Set environment variables
+You will need to set the following environment variables:
+
+```
+COUCH_URL = "[accountname].cloudant.com"
+COUCH_DB_NAME = "gocostudent"
+COUCH_USER = "[API key username]"
+COUCH_PASS = "[API key secret]"
+FORECASTIO_API_KEY = "[API key]"
+```
+
+In local development, you can set environment variables in a file called
+`keys.py` (ignored by git). In production, they must be set as environment
+variables. For example, using Heroku, you can set all the environment variables
+in one command, with declarations separated by spaces:
+
+```
+heroku config:set COUCH_URL=[account name].cloudant.com COUCH_DB_NAME=gocostudent (etc...)
+```
+
+Sign up for a CloudAnt account (free CouchDB hosting)
+[here](https://cloudant.com/sign-up/). Sign up for a ForecastIO account
+(free weather API) [here](https://developer.forecast.io/register).
+
+## 4. Run
+### Local development:
+This will run the app on `localhost:5000` and will reload automatically when the code
+changes.
+
+```
+gunicorn -c gunicorn_config.py --reload run:app
+```
+
+### Production:
+I recommend deploying the app via git to Heroku or some similar service. I use
+Dokku, a Heroku clone running on a DigitalOcean VPS (Virtual Private Server).
+Heroku and Dokku rely on the `Procfile` to describe how to run the app.
+
+## 5. Testing
+I test the app in local development using `curl`, for example:
+`curl http://localhost:5000/gocostudent/2.3/chapelcredits?username=
+[user]&password=[base64 encoded password]`
+
+My unit tests are in `test.py`, which can be run to quickly make sure that
+nothing is broken before deploying.
