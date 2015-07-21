@@ -1,17 +1,17 @@
-import services, mechanize, httplib
+"""Get student ID from Go Gordon."""
+from services.logingogordon import login_go_gordon
+import httplib
 from bs4 import BeautifulSoup
 
-def get_student_id(username, password):
-    """Get student id from Go Gordon"""
 
+def get_student_id(username, password):
+    """Get student id from Go Gordon."""
     url = 'http://go.gordon.edu/general/whoami.cfm'
 
     # Get page
     try:
-        browser = services.logingogordon.login_go_gordon(url,
-            username,
-            password,
-            reauthenticate=True)
+        browser = login_go_gordon(url, username, password,
+                                  reauthenticate=True)
     except ValueError as err:
         raise ValueError("Student ID error: " + err[0], err[1])
     else:
@@ -28,4 +28,4 @@ def get_student_id(username, password):
         except ValueError as err:
             raise ValueError("Could not find student ID.", httplib.NOT_FOUND)
 
-        return { 'data': student_id }
+        return {'data': student_id}

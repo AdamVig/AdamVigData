@@ -1,15 +1,18 @@
-import mechanize, httplib, urllib2
+"""Log user in to Go Gordon."""
+import mechanize
+import httplib
+import urllib2
+
 
 def login_go_gordon(url, username, password, reauthenticate=False):
-    """Login to Go Gordon, return an instance of Mechanize browser"""
-
+    """Login to Go Gordon and return an instance of Mechanize browser."""
     reauth_url = 'http://go.gordon.edu/lib/auth/level3logon.cfm'
 
     browser = mechanize.Browser()
     browser.set_handle_robots(False)
     browser.add_password(url, username, password)
 
-    if reauthenticate == True:
+    if reauthenticate is True:
         browser.add_password(reauth_url, username, password)
 
     try:
@@ -17,17 +20,17 @@ def login_go_gordon(url, username, password, reauthenticate=False):
     except urllib2.HTTPError as err:
         if err.code == httplib.UNAUTHORIZED:
             raise ValueError("Username and password do not match.",
-                httplib.UNAUTHORIZED)
+                             httplib.UNAUTHORIZED)
         else:
             raise ValueError("HTTPError: Login failed.",
-                httplib.INTERNAL_SERVER_ERROR)
+                             httplib.INTERNAL_SERVER_ERROR)
 
     except Exception as err:
         raise ValueError("Login failed.",
-            httplib.INTERNAL_SERVER_ERROR)
+                         httplib.INTERNAL_SERVER_ERROR)
     else:
 
-        if reauthenticate == True:
+        if reauthenticate is True:
             # Submit authentication form
             browser.select_form(name="form1")
             browser['password'] = password

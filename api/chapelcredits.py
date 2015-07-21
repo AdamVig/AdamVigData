@@ -1,17 +1,17 @@
-import services, mechanize, httplib
+"""Get chapel credits from Go Gordon."""
+from services.logingogordon import login_go_gordon
+import httplib
 from bs4 import BeautifulSoup
 
-def get_chapel_credits(username, password):
-    """Get chapel credits from Go Gordon"""
 
+def get_chapel_credits(username, password):
+    """Get chapel credits from Go Gordon."""
     # Retrieve page
     url = 'https://go.gordon.edu/student/chapelcredits/viewattendance.cfm'
 
     try:
-        browser = services.logingogordon.login_go_gordon(url,
-            username,
-            password,
-            reauthenticate=False)
+        browser = login_go_gordon(url, username, password,
+                                  reauthenticate=False)
     except ValueError as err:
         raise ValueError("Chapel credits error: " + err[0], err[1])
     else:

@@ -1,8 +1,9 @@
+"""Create an HTTP log entry."""
 import httplib
 
-def create_log(request, response):
-    """Create log entry"""
 
+def create_log(request, response):
+    """Create an HTTP log entry based on a request and response."""
     separator = ' '
     log_message = ''
     method = request.method
@@ -25,7 +26,7 @@ def create_log(request, response):
 
     if 'username' in request.args:
         log_message += 'user={username}{separator}' \
-            .format(username=request.args.get('username'), \
+            .format(username=request.args.get('username'),
                     separator=separator)
 
     return log_message

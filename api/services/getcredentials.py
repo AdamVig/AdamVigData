@@ -1,10 +1,13 @@
+"""Interpret user credentials."""
 import base64
 
-def get_credentials(args):
-    """Retrieve username and password from args object
-    Decode password using Base64 library
-    """
 
+def get_credentials(args):
+    """Interpret users credentials.
+
+    Retrieves username and password from args object and decode password
+    using Base64 library.
+    """
     username = args.get('username')
     password = args.get('password')
 

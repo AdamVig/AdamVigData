@@ -1,9 +1,11 @@
-import mechanize, httplib
+""""Get mealpoints from My Gordon."""
+import mechanize
+import httplib
 from bs4 import BeautifulSoup
 
-def get_meal_points(username, password):
-    """Get meal points from My Gordon"""
 
+def get_meal_points(username, password):
+    """Get meal points from My Gordon."""
     # Login
     browser = login_my_gordon(
         username, password, mechanize.Browser())
@@ -13,8 +15,8 @@ def get_meal_points(username, password):
     loginMessage = soup.find(id="CP_V_lblLoginMessage")
     if loginMessage:
         if loginMessage.string == "Invalid Login":
-            raise ValueError("Invalid login to My Gordon", httplib.UNAUTHORIZED)
-
+            raise ValueError("Invalid login to My Gordon",
+                             httplib.UNAUTHORIZED)
 
     # Navigate to mealpoints page
     browser.open('/ICS/Students/Mealpoints.jnz')
@@ -23,9 +25,10 @@ def get_meal_points(username, password):
     page = BeautifulSoup(browser.response().read())
 
     # Test for error caused by professor accounts
-    notFoundMessage = page.find('span', { "class": "notFound" })
+    notFoundMessage = page.find('span', {"class": "notFound"})
     if notFoundMessage is not None:
-        if notFoundMessage.string == "You do not have the necessary permissions to view this page.":
+        if notFoundMessage.string == "You do not have the necessary \
+                permissions to view this page.":
             raise ValueError("Could not find mealpoints.", httplib.NOT_FOUND)
 
     iframe = page.find('iframe')
@@ -48,19 +51,20 @@ def get_meal_points(username, password):
                 .find_all('td')[1]    \
                 .find('span')         \
                 .text
-        except IndexError as err:
+        except IndexError:
             meal_points = 0
         else:
             meal_points = parse_meal_points(meal_points)
 
-        return { 'data': meal_points }
+        return {'data': meal_points}
 
     else:
-        raise ValueError("Meal points are not available", browser.response().code)
+        raise ValueError("Meal points are not available",
+                         browser.response().code)
+
 
 def parse_meal_points(meal_points):
-    """Parse meal points string into a rounded integer"""
-
+    """Parse meal points string into a rounded integer."""
     # Remove dollar sign
     meal_points = meal_points[1:]
 
@@ -72,11 +76,12 @@ def parse_meal_points(meal_points):
 
     return meal_points
 
+
 def login_my_gordon(username, password, browser):
-    """Login to My.Gordon.edu with given credentials
+    """Login to My.Gordon.edu with given credentials.
+
     Returns browser instance
     """
-
     browser.open("https://my.gordon.edu/ics")
 
     browser.select_form(name="MAINFORM")

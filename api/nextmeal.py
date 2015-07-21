@@ -1,9 +1,12 @@
-import requests, json, mechanize, httplib, urllib2
+"""Get menu for next meal from Go Gordon."""
+import mechanize
+import httplib
+import urllib2
 from bs4 import BeautifulSoup
 
-def get_next_meal(username, password):
-    """Get menu for next meal from Go Gordon"""
 
+def get_next_meal(username, password):
+    """Get menu for next meal from Go Gordon."""
     url = 'https://go.gordon.edu/departments/dining'
 
     # Initialize browser
@@ -19,14 +22,14 @@ def get_next_meal(username, password):
     except urllib2.HTTPError as err:
         if err.code == httplib.UNAUTHORIZED:
             raise ValueError("Username and password do not match.",
-                httplib.UNAUTHORIZED)
+                             httplib.UNAUTHORIZED)
         else:
             raise ValueError("HTTPError: Next meal is unavailable.",
-                httplib.INTERNAL_SERVER_ERROR)
+                             httplib.INTERNAL_SERVER_ERROR)
 
-    except Exception as err:
+    except Exception:
         raise ValueError("Next meal is unavailable.",
-            httplib.INTERNAL_SERVER_ERROR)
+                         httplib.INTERNAL_SERVER_ERROR)
     else:
         page = BeautifulSoup(browser.response().read())
 
@@ -41,4 +44,4 @@ def get_next_meal(username, password):
             .strip()             \
             .replace('\n\r', '')
 
-        return { 'data': next_meal }
+        return {'data': next_meal}

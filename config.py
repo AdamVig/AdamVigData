@@ -1,3 +1,4 @@
+"""Configuration parameters for the app."""
 DEBUG = False
 TESTING = False
 

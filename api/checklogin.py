@@ -1,29 +1,31 @@
-import httplib, requests, services
+"""Verify that login is valid using Gordon's servers."""
+import httplib
+import requests
+from services import db
+
 
 def check_login(username, password):
-    """Check login on Go Gordon"""
-
+    """Validate login on Go Gordon."""
     url = 'https://go.gordon.edu/'
-    auth = username + ':' + password + '@'
 
     try:
         response = requests.head(url, auth=(username, password))
 
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         raise ValueError("Unexpected error.", httplib.INTERNAL_SERVER_ERROR)
 
     else:
         if response.status_code == httplib.OK:
             try:
-                user = services.db.get_user(username)
-            except ValueError as err:
+                user = db.get_user(username)
+            except ValueError:
                 print "Valid login but user does not exist in database."
             else:
-                return { 'data': user }
-
+                return {'data': user}
 
         elif response.status_code == httplib.UNAUTHORIZED:
             raise ValueError("Invalid login.", httplib.UNAUTHORIZED)
 
         else:
-            raise ValueError("Unexpected error.", httplib.INTERNAL_SERVER_ERROR)
+            raise ValueError("Unexpected error.",
+                             httplib.INTERNAL_SERVER_ERROR)
