@@ -17,6 +17,8 @@ try:
     import keys
 except ImportError as err:
     import os
+    COUCH_SERVER = os.environ.get('COUCH_SERVER')
+    COUCH_DB_NAME = os.environ.get('COUCH_DB_NAME')
     COUCH_USER = os.environ.get('COUCH_USER')
     COUCH_PASS = os.environ.get('COUCH_PASS')
     FORECASTIO_API_KEY = os.environ.get('FORECASTIO_API_KEY')
