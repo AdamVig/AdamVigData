@@ -213,7 +213,7 @@ Follow the installation instructions at [pip.pypa.io](https://pip.pypa.io/en/lat
 You will need to set the following environment variables:
 
 ```
-COUCH_URL = "[accountname].cloudant.com"
+COUCH_SERVER = "[accountname].cloudant.com"
 COUCH_DB_NAME = "gocostudent"
 COUCH_USER = "[API key username]"
 COUCH_PASS = "[API key secret]"
@@ -226,7 +226,7 @@ variables. For example, using Heroku, you can set all the environment variables
 in one command, with declarations separated by spaces:
 
 ```
-heroku config:set COUCH_URL=[account name].cloudant.com COUCH_DB_NAME=gocostudent (etc...)
+heroku config:set COUCH_SERVER=[account name].cloudant.com COUCH_DB_NAME=gocostudent (etc...)
 ```
 
 Sign up for a CloudAnt account (free CouchDB hosting)
