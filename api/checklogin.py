@@ -2,6 +2,7 @@
 import httplib
 import requests
 from services import db
+from config import error_message
 
 
 def check_login(username, password):
@@ -12,7 +13,8 @@ def check_login(username, password):
         response = requests.head(url, auth=(username, password))
 
     except requests.exceptions.RequestException:
-        raise ValueError("Unexpected error.", httplib.INTERNAL_SERVER_ERROR)
+        raise ValueError(error_message['INTERNAL_SERVER_ERROR'],
+                         httplib.INTERNAL_SERVER_ERROR)
 
     else:
         if response.status_code == httplib.OK:
@@ -24,8 +26,9 @@ def check_login(username, password):
                 return {'data': user}
 
         elif response.status_code == httplib.UNAUTHORIZED:
-            raise ValueError("Invalid login.", httplib.UNAUTHORIZED)
+            raise ValueError(error_message['UNAUTHORIZED'],
+                             httplib.UNAUTHORIZED)
 
         else:
-            raise ValueError("Unexpected error.",
+            raise ValueError(error_message['INTERNAL_SERVER_ERROR'],
                              httplib.INTERNAL_SERVER_ERROR)

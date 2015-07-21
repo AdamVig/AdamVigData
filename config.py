@@ -12,6 +12,21 @@ LOG_FORMAT = '[%(levelname)s] %(message)s'
 
 END_POINT_PREFIX = '/gocostudent/<version>/'
 
+# Emoji
+emoji = {
+    "SAD_FACE": u'\U0001F62D',
+    "SOS": u'\U0001F198',
+    "CLAPPING": u'\U0001F44F',
+    "SHRUG": u'\U0001F481'
+}
+
+# Error messages
+error_message = {
+    "INTERNAL_SERVER_ERROR": "Something went wrong " + emoji['SOS'],
+    "NOT_FOUND": "Couldn't find it " + emoji['SAD_FACE'],
+    "UNAUTHORIZED": "Your login is wrong! " + emoji['SHRUG']
+}
+
 # Get API keys and server info either from local file or environment variables
 try:
     import keys

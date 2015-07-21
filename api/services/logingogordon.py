@@ -2,10 +2,15 @@
 import mechanize
 import httplib
 import urllib2
+import config
 
 
 def login_go_gordon(url, username, password, reauthenticate=False):
-    """Login to Go Gordon and return an instance of Mechanize browser."""
+    """Login to Go Gordon and return an instance of Mechanize browser.
+
+    reauthenticate parameter dictates whether or not to pass the browser
+    through the /level3logon page which allows access to private student info
+    """
     reauth_url = 'http://go.gordon.edu/lib/auth/level3logon.cfm'
 
     browser = mechanize.Browser()
@@ -19,14 +24,14 @@ def login_go_gordon(url, username, password, reauthenticate=False):
         browser.open(url)
     except urllib2.HTTPError as err:
         if err.code == httplib.UNAUTHORIZED:
-            raise ValueError("Username and password do not match.",
+            raise ValueError(config.error_message['UNAUTHORIZED'],
                              httplib.UNAUTHORIZED)
         else:
-            raise ValueError("HTTPError: Login failed.",
+            raise ValueError(config.error_message['INTERNAL_SERVER_ERROR'],
                              httplib.INTERNAL_SERVER_ERROR)
 
     except Exception as err:
-        raise ValueError("Login failed.",
+        raise ValueError(config.error_message['INTERNAL_SERVER_ERROR'],
                          httplib.INTERNAL_SERVER_ERROR)
     else:
 
@@ -39,6 +44,7 @@ def login_go_gordon(url, username, password, reauthenticate=False):
             error_message = "Logon failure: unknown user name or bad password"
 
             if error_message in browser.response().read():
-                raise ValueError("Invalid login.", httplib.UNAUTHORIZED)
+                raise ValueError(config.error_message['UNAUTHORIZED'],
+                                 httplib.UNAUTHORIZED)
 
         return browser

@@ -1,6 +1,7 @@
 """"Get mealpoints from My Gordon."""
 import mechanize
 import httplib
+from config import error_message
 from bs4 import BeautifulSoup
 
 
@@ -15,7 +16,7 @@ def get_meal_points(username, password):
     loginMessage = soup.find(id="CP_V_lblLoginMessage")
     if loginMessage:
         if loginMessage.string == "Invalid Login":
-            raise ValueError("Invalid login to My Gordon",
+            raise ValueError(error_message['UNAUTHORIZED'],
                              httplib.UNAUTHORIZED)
 
     # Navigate to mealpoints page
@@ -29,12 +30,12 @@ def get_meal_points(username, password):
     if notFoundMessage is not None:
         if notFoundMessage.string == "You do not have the necessary \
                 permissions to view this page.":
-            raise ValueError("Could not find mealpoints.", httplib.NOT_FOUND)
+            raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
 
     iframe = page.find('iframe')
 
     if iframe is None:
-        raise ValueError("Could not find mealpoints.", httplib.NOT_FOUND)
+        raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
 
     # Navigate to page that displays mealpoints
     browser.open('https://my.gordon.edu' + iframe['src'])
@@ -59,8 +60,8 @@ def get_meal_points(username, password):
         return {'data': meal_points}
 
     else:
-        raise ValueError("Meal points are not available",
-                         browser.response().code)
+        raise ValueError(error_message['INTERNAL_SERVER_ERROR'],
+                         httplib.INTERNAL_SERVER_ERROR)
 
 
 def parse_meal_points(meal_points):

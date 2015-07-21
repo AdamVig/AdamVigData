@@ -1,5 +1,6 @@
 """Get chapel credits from Go Gordon."""
 from services.logingogordon import login_go_gordon
+from config import error_message
 import httplib
 from bs4 import BeautifulSoup
 
@@ -18,7 +19,7 @@ def get_chapel_credits(username, password):
         response = browser.response().read()
 
     if "No Christian Life and Worship Credit Found" in response:
-        raise ValueError("No chapel credits found.", httplib.NOT_FOUND)
+        raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
 
     # Find chapel credits on page
     page = BeautifulSoup(response)
@@ -26,7 +27,7 @@ def get_chapel_credits(username, password):
     try:
         credit_table = page.find_all('table')[8]
     except IndexError as err:
-        raise ValueError("No chapel credits found.", httplib.NOT_FOUND)
+        raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
     else:
         credits = credit_table \
             .find_all('tr')[0] \
