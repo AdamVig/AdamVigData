@@ -8,6 +8,7 @@ WENHAM_LONGITUDE = -70.824631
 PAPERTRAIL_URL = 'logs2.papertrailapp.com'
 PAPERTRAIL_PORT = 26735
 
+DATE_FORMAT = '%m/%d/%y %I:%M %p'
 LOG_FORMAT = '[%(levelname)s] %(message)s'
 
 END_POINT_PREFIX = '/gocostudent/<version>/'
