@@ -38,6 +38,13 @@ def save_user(user, db=get_db()):
         return updated_user
 
 
+def save_app_info(key, data, db=get_db()):
+    """Save app info in the info doc."""
+    app_info = get_app_info(db)
+    app_info[key] = data
+    db.save(app_info)
+
+
 def log_usage(username, data_type, app_version, data, should_cache=True):
     """Log usage and cache data."""
     db = get_db()
