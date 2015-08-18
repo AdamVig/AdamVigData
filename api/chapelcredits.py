@@ -19,7 +19,10 @@ def get_chapel_credits(username, password):
         response = browser.response().read()
 
     if "No Christian Life and Worship Credit Found" in response:
-        raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
+        return {
+            'data': 0,
+            'outof': 0
+        }
 
     # Find chapel credits on page
     page = BeautifulSoup(response)
