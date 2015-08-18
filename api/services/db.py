@@ -66,8 +66,9 @@ def log_usage(username, data_type, app_version, data, should_cache=True):
             user['dataRequests'] = {}
             user['dataRequests'][data_type] = 1
 
-        # Set last login time to now
+        # Set last login time to now and mark as active
         user['lastLogin'] = getdate.get_date()
+        user['active'] = True
 
         # Set app version
         user['appVersion'] = app_version
