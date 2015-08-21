@@ -71,9 +71,9 @@ def get_data(getter, request_info, log=True, cache=True):
 @app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'POST', 'HEAD'])
 def route_chapel_credits(version):
     """Handle requests for chapel credits."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'chapelCredits',
             'version': version
         }
@@ -85,9 +85,9 @@ def route_chapel_credits(version):
 @app.route(END_POINT_PREFIX + 'mealpoints', methods=['GET', 'POST', 'HEAD'])
 def route_meal_points(version):
     """Handle requests for meal points."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'mealPoints',
             'version': version
         }
@@ -100,9 +100,9 @@ def route_meal_points(version):
            methods=['GET', 'POST', 'HEAD'])
 def route_days_left_in_semester(version):
     """Handle requests for days left in semester."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'daysLeftInSemester',
             'version': version
         }
@@ -115,9 +115,9 @@ def route_days_left_in_semester(version):
            methods=['GET', 'POST', 'HEAD'])
 def route_meal_points_per_day(version):
     """Handle requests for meal points per day."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'mealPointsPerDay',
             'version': version
         }
@@ -129,9 +129,9 @@ def route_meal_points_per_day(version):
 @app.route(END_POINT_PREFIX + 'studentid', methods=['GET', 'POST', 'HEAD'])
 def route_student_id(version):
     """Handle requests for student ID."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args or request.form,
+            'args': request.args or request.get_json(),
             'endpoint': 'studentID',
             'version': version
         }
@@ -143,9 +143,9 @@ def route_student_id(version):
 @app.route(END_POINT_PREFIX + 'studentinfo', methods=['GET', 'POST', 'HEAD'])
 def route_student_info(version):
     """Handle requests for student info."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'studentInfo',
             'version': version
         }
@@ -157,9 +157,9 @@ def route_student_info(version):
 @app.route(END_POINT_PREFIX + 'nextmeal', methods=['GET', 'POST', 'HEAD'])
 def route_next_meal(version):
     """Handle requests for next meal."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'nextMeal',
             'version': version
         }
@@ -171,9 +171,9 @@ def route_next_meal(version):
 @app.route(END_POINT_PREFIX + 'temperature', methods=['GET', 'POST', 'HEAD'])
 def route_temperature(version):
     """Handle requests for temperature."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'temperature',
             'version': version
         }
@@ -185,9 +185,9 @@ def route_temperature(version):
 @app.route(END_POINT_PREFIX + 'checklogin', methods=['GET', 'POST', 'HEAD'])
 def route_check_login(version):
     """Handle requests to check login."""
-    if request.form or request.args:
+    if request.data or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.get_json(),
             'endpoint': 'checkLogin',
             'version': version
         }
@@ -199,7 +199,7 @@ def route_check_login(version):
 @app.route(END_POINT_PREFIX + 'setproperty', methods=['GET', 'POST', 'HEAD'])
 def route_set_property(version):
     """Handle requests to set a property in user data."""
-    if request.form or request.args:
+    if request.data or request.args:
         credentials = services.getcredentials.get_credentials(request.args)
         property_name = request.args.get('property')
         value = request.args.get('value')
@@ -220,7 +220,7 @@ def route_set_property(version):
 @app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'POST', 'HEAD'])
 def route_create_user(version):
     """Create a new user doc in the database."""
-    if request.form or request.args:
+    if request.data or request.args:
         credentials = services.getcredentials.get_credentials(request.args)
         try:
             user = services.db.create_user(credentials[0], version)
