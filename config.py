@@ -22,11 +22,11 @@ emoji = {
     "SHRUG": u'\U0001F481'
 }
 
-# Error messages
+# Error messages should be 22 characters max
 error_message = {
-    "INTERNAL_SERVER_ERROR": "Something went wrong " + emoji['SOS'],
-    "NOT_FOUND": "Couldn't find it " + emoji['SAD_FACE'],
-    "UNAUTHORIZED": "Your login is wrong! " + emoji['SHRUG']
+    "INTERNAL_SERVER_ERROR": "Something went wrong! " + emoji['SOS'],
+    "NOT_FOUND":             "Couldn't find data. " + emoji['SAD_FACE'],
+    "UNAUTHORIZED":          "Your login is wrong. " + emoji['SHRUG']
 }
 
 # Get API keys and server info either from local file or environment variables
