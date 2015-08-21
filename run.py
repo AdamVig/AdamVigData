@@ -68,10 +68,10 @@ def get_data(getter, request_info, log=True, cache=True):
                                      httplib.BAD_GATEWAY))
 
 
-@app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'POST', 'HEAD'])
 def route_chapel_credits(version):
     """Handle requests for chapel credits."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'chapelCredits',
@@ -82,10 +82,10 @@ def route_chapel_credits(version):
         return "Chapel credits endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'mealpoints', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'mealpoints', methods=['GET', 'POST', 'HEAD'])
 def route_meal_points(version):
     """Handle requests for meal points."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'mealPoints',
@@ -96,10 +96,11 @@ def route_meal_points(version):
         return "Meal points endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'daysleftinsemester', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'daysleftinsemester',
+           methods=['GET', 'POST', 'HEAD'])
 def route_days_left_in_semester(version):
     """Handle requests for days left in semester."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'daysLeftInSemester',
@@ -110,10 +111,11 @@ def route_days_left_in_semester(version):
         return "Days left in semester endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'mealpointsperday', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'mealpointsperday',
+           methods=['GET', 'POST', 'HEAD'])
 def route_meal_points_per_day(version):
     """Handle requests for meal points per day."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'mealPointsPerDay',
@@ -124,12 +126,12 @@ def route_meal_points_per_day(version):
         return "Meal points per day endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'studentid', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'studentid', methods=['GET', 'POST', 'HEAD'])
 def route_student_id(version):
     """Handle requests for student ID."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
-            'args': request.args,
+            'args': request.args or request.form,
             'endpoint': 'studentID',
             'version': version
         }
@@ -138,10 +140,10 @@ def route_student_id(version):
         return "Student ID endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'studentinfo', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'studentinfo', methods=['GET', 'POST', 'HEAD'])
 def route_student_info(version):
     """Handle requests for student info."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'studentInfo',
@@ -152,10 +154,10 @@ def route_student_info(version):
         return "Student info endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'nextmeal', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'nextmeal', methods=['GET', 'POST', 'HEAD'])
 def route_next_meal(version):
     """Handle requests for next meal."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'nextMeal',
@@ -166,10 +168,10 @@ def route_next_meal(version):
         return "Next meal endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'temperature', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'temperature', methods=['GET', 'POST', 'HEAD'])
 def route_temperature(version):
     """Handle requests for temperature."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'temperature',
@@ -180,10 +182,10 @@ def route_temperature(version):
         return "Temperature endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'checklogin', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'checklogin', methods=['GET', 'POST', 'HEAD'])
 def route_check_login(version):
     """Handle requests to check login."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         request_info = {
             'args': request.args,
             'endpoint': 'checkLogin',
@@ -194,10 +196,10 @@ def route_check_login(version):
         return "Check login endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'setproperty', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'setproperty', methods=['GET', 'POST', 'HEAD'])
 def route_set_property(version):
     """Handle requests to set a property in user data."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         credentials = services.getcredentials.get_credentials(request.args)
         property_name = request.args.get('property')
         value = request.args.get('value')
@@ -215,10 +217,10 @@ def route_set_property(version):
         return "Set property endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'createuser', methods=['GET', 'POST', 'HEAD'])
 def route_create_user(version):
     """Create a new user doc in the database."""
-    if request.method == 'GET' and request.args:
+    if request.form or request.args:
         credentials = services.getcredentials.get_credentials(request.args)
         try:
             user = services.db.create_user(credentials[0], version)
@@ -234,7 +236,7 @@ def route_create_user(version):
         return "Create user endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'appinfo', methods=['GET', 'HEAD'])
+@app.route(END_POINT_PREFIX + 'appinfo', methods=['GET', 'POST', 'HEAD'])
 def route_app_info(version):
     """Handle requests for app info."""
     app_info = services.db.get_app_info()
