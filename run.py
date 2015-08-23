@@ -239,7 +239,7 @@ def route_create_user(version):
 @app.route(END_POINT_PREFIX + 'appinfo', methods=['GET', 'POST', 'HEAD'])
 def route_app_info(version):
     """Handle requests for app info."""
-    app_info = services.db.get_app_info()
+    app_info = services.db.get_doc('info')
     return jsonify(app_info)
 
 
