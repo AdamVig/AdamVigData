@@ -19,7 +19,7 @@ def check_login(username, password):
     else:
         if response.status_code == httplib.OK:
             try:
-                user = db.get_user(username)
+                user = db.get_doc(username)
             except ValueError:
                 print "Valid login but user does not exist in database."
             else:

@@ -6,7 +6,7 @@ from services import db
 def get_days_left_in_semester(username, password):
     """Calculate number of days left in semester."""
     date_format = "%m/%d/%Y"
-    app_info = db.get_app_info()
+    app_info = db.get_doc('info')
     last_date = datetime.strptime(app_info['lastDayOfSemester'], date_format)
 
     delta = last_date - datetime.today()

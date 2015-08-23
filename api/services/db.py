@@ -13,18 +13,13 @@ def get_db():
     return db
 
 
-def get_app_info(db=get_db()):
-    """Get info doc from database."""
-    return db['info']
-
-
-def get_user(username, db=get_db()):
-    """Get user from database."""
-    user = db.get(username)
-    if user is not None:
-        return user
+def get_doc(doc_id, db=get_db()):
+    """Get doc from database by id."""
+    doc = db[doc_id]
+    if doc is not None:
+        return doc
     else:
-        raise ValueError("User does not exist.", httplib.NOT_FOUND)
+        raise ValueError("Doc does not exist.", httplib.NOT_FOUND)
 
 
 def save_user(user, db=get_db()):
@@ -40,7 +35,7 @@ def save_user(user, db=get_db()):
 
 def save_app_info(key, data, db=get_db()):
     """Save app info in the info doc."""
-    app_info = get_app_info(db)
+    app_info = get_doc('info', db)
     app_info[key] = data
     db.save(app_info)
 
@@ -50,7 +45,7 @@ def log_usage(username, data_type, app_version, data, should_cache=True):
     db = get_db()
 
     try:
-        user = get_user(username, db)
+        user = get_doc(username, db)
     # User does not exist
     except ValueError:
         create_user(username, app_version)
@@ -124,7 +119,7 @@ def remove_data_cache(user):
 def set_property(username, property_name, value):
     """Set property in user data."""
     try:
-        user = get_user(username)
+        user = get_doc(username)
     except ValueError:
         raise ValueError("Could not disable caching; user does not exist.",
                          httplib.NOT_FOUND)
@@ -144,7 +139,7 @@ def create_user(username, app_version):
     db = get_db()
 
     try:
-        user = get_user(username, db)
+        user = get_doc(username, db)
     # User does not exist
     except ValueError:
         user = {
