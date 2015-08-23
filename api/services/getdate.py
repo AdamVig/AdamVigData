@@ -6,9 +6,6 @@ from pytz import timezone
 
 def get_date():
     """Get today's date in format MM-DD-YY."""
-    # Format for date output
-
-    # Datetime in Eastern timezone
     eastern = timezone('US/Eastern')
     eastern_today = datetime.now(eastern)
 
@@ -30,3 +27,8 @@ def parse_date_time(date_time):
     eastern = timezone('US/Eastern')
     parsed = datetime.strptime(date_time, DATE_FORMAT)
     return eastern.localize(parsed)
+
+
+def make_datetime_string(datetime, date_format=DATE_FORMAT):
+    """Make string from datetime."""
+    return datetime.strftime(date_format)
