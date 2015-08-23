@@ -18,15 +18,19 @@ def get_date_time_object():
     return datetime.now(eastern)
 
 
-def parse_date_time(date_time):
+def parse_date_time(date_time, date_format=DATE_FORMAT):
     """Parse a date time string into a date time object.
 
     String must be in format defined by DATE_FORMAT constant.
-    Returns datetime with set timezone.
+    Returns datetime with set timezone or None if not parseable.
     """
     eastern = timezone('US/Eastern')
-    parsed = datetime.strptime(date_time, DATE_FORMAT)
-    return eastern.localize(parsed)
+    try:
+        parsed = datetime.strptime(date_time, date_format)
+    except ValueError:
+        return None
+    else:
+        return eastern.localize(parsed)
 
 
 def make_datetime_string(datetime, date_format=DATE_FORMAT):
