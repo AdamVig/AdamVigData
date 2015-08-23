@@ -22,7 +22,11 @@ def get_date_time_object():
 
 
 def parse_date_time(date_time):
-    """Parse a date time string into a date time object."""
+    """Parse a date time string into a date time object.
+
+    String must be in format defined by DATE_FORMAT constant.
+    Returns datetime with set timezone.
+    """
     eastern = timezone('US/Eastern')
     parsed = datetime.strptime(date_time, DATE_FORMAT)
     return eastern.localize(parsed)
