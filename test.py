@@ -360,6 +360,25 @@ class AdamVigAPITestCase(unittest.TestCase):
     #                             end_point + credentials)
     #     self.assertEqual(response.status_code, httplib.UNAUTHORIZED)
 
+    #####################
+    # NEXT CHAPEL EVENT #
+    #####################
+
+    def test_next_chapel_event(self):
+        """Test next chapel event."""
+        end_point = 'nextchapelevent'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.username, password=self.password)
+
+        print "Test next chapel event: "
+        response = self.app.get(self.end_point_prefix + '/' +
+                                end_point + credentials)
+        self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
+
 
 if __name__ == '__main__':
     unittest.main()
