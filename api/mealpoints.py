@@ -13,11 +13,9 @@ def get_meal_points(username, password):
 
     # Check for invalid login
     soup = BeautifulSoup(browser.response().read())
-    loginMessage = soup.find(id="CP_V_lblLoginMessage")
-    if loginMessage:
-        if loginMessage.string == "Invalid Login":
-            raise ValueError(error_message['UNAUTHORIZED'],
-                             httplib.UNAUTHORIZED)
+    if soup.find(id="CP_V_lblLoginMessage"):
+        raise ValueError(error_message['UNAUTHORIZED'],
+                         httplib.UNAUTHORIZED)
 
     # Navigate to mealpoints page
     browser.open('/ICS/Students/Mealpoints.jnz')
