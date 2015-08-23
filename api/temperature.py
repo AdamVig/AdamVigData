@@ -3,21 +3,18 @@ from config import *
 from services import db
 from services import getdate
 import forecastio
-from datetime import timedelta
 
 
 def get_temperature(username, password):
     """Get current temperature in Wenham, MA."""
-    cached_weather = db.get_app_info()['weather']
+    temperature = None
+    cached_weather = db.get_doc('cache')['weather']
 
-    updated_time = getdate.parse_date_time(cached_weather['updated'])
+    time_expiration = getdate.parse_date_time(cached_weather['expiration'])
     time_now = getdate.get_date_time_object()
-    time_since_updated = time_now - updated_time
 
-    update_interval = timedelta(0, 0, 0, 0, WEATHER_UPDATE_INTERVAL_MINUTES)
-
-    if time_since_updated < update_interval:
-        return {'data': cached_weather['temperature']}
+    if time_now < time_expiration:
+        temperature = cached_weather['temperature']
     else:
         forecast = forecastio.load_forecast(FORECASTIO_API_KEY,
                                             WENHAM_LATITUDE,
@@ -29,11 +26,12 @@ def get_temperature(username, password):
         # Round temperature to whole number
         temperature = int(temperature)
 
-        weather = {
-            'temperature': temperature,
-            'updated': getdate.get_date()
+        weather_data = {
+            'temperature': temperature
         }
 
-        db.save_app_info("weather", weather)
+        db.cache_app_data('weather',
+                          weather_data,
+                          WEATHER_UPDATE_INTERVAL_MINUTES)
 
     return {'data': temperature}

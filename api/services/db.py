@@ -3,6 +3,7 @@ from config import *
 import couchdb
 import getdate
 import httplib
+from datetime import timedelta
 
 
 def get_db():
@@ -38,6 +39,18 @@ def save_app_info(key, data, db=get_db()):
     app_info = get_doc('info', db)
     app_info[key] = data
     db.save(app_info)
+
+
+def cache_app_data(data_type, data, update_interval_minutes, db=get_db()):
+    """Cache app data in the cache doc with expiration date."""
+    app_cache = get_doc('cache', db)
+    now = getdate.get_date_time_object()
+    expiration_time = now + timedelta(minutes=update_interval_minutes)
+
+    data['expiration'] = getdate.make_datetime_string(expiration_time)
+
+    app_cache[data_type] = data
+    db.save(app_cache)
 
 
 def log_usage(username, data_type, app_version, data, should_cache=True):
