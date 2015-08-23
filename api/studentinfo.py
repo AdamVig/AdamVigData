@@ -10,7 +10,7 @@ def get_student_info(username, password):
     try:
         browser = login_go_gordon(url, username, password, reauthenticate=True)
     except ValueError as err:
-        raise ValueError("Student info error: " + err[0], err[1])
+        raise ValueError(err[0], err[1])
     else:
         page = BeautifulSoup(browser.response().read())
 

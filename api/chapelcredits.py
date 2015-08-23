@@ -14,7 +14,7 @@ def get_chapel_credits(username, password):
         browser = login_go_gordon(url, username, password,
                                   reauthenticate=False)
     except ValueError as err:
-        raise ValueError("Chapel credits error: " + err[0], err[1])
+        raise ValueError(err[0], err[1])
     else:
         response = browser.response().read()
 
