@@ -161,7 +161,8 @@ def create_user(username, app_version):
             'lastLogin': getdate.get_date(),
             'appVersion': app_version,
             'totalLogins': 0,
-            'dataRequests': {}
+            'dataRequests': {},
+            'active': True
         }
         save_user(user, db)
 
