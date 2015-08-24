@@ -17,7 +17,7 @@ def get_db():
 def get_doc(doc_id, db=get_db()):
     """Get doc from database by id."""
     doc = db[doc_id]
-    if doc is not None:
+    if doc:
         return doc
     else:
         raise ValueError("Doc does not exist.", httplib.NOT_FOUND)
