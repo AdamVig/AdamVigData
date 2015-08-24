@@ -16,11 +16,12 @@ def get_db():
 
 def get_doc(doc_id, db=get_db()):
     """Get doc from database by id."""
-    doc = db[doc_id]
-    if doc:
-        return doc
-    else:
+    try:
+        doc = db[doc_id]
+    except couchdb.http.ResourceNotFound:
         raise ValueError("Doc does not exist.", httplib.NOT_FOUND)
+    else:
+        return doc
 
 
 def save_user(user, db=get_db()):
@@ -59,9 +60,11 @@ def log_usage(username, data_type, app_version, data, should_cache=True):
 
     try:
         user = get_doc(username, db)
+
     # User does not exist
     except ValueError:
         create_user(username, app_version)
+
     # User exists
     else:
         # Increment or create number of requests for data type
