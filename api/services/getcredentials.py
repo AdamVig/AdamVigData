@@ -15,5 +15,5 @@ def get_credentials(args):
         password = base64.b64decode(password)
     except:
         raise ValueError("Password is not properly Base64 encoded.")
-
-    return username, password
+    else:
+        return username, password
