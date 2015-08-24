@@ -215,7 +215,8 @@ def route_check_login(version):
 def route_set_property(version):
     """Handle requests to set a property in user data."""
     if request.data or request.args:
-        credentials = services.getcredentials.get_credentials(request.args)
+        params = request.args or request.get_json()
+        credentials = services.getcredentials.get_credentials(params)
         property_name = request.args.get('property')
         value = request.args.get('value')
         try:
@@ -236,7 +237,8 @@ def route_set_property(version):
 def route_create_user(version):
     """Create a new user doc in the database."""
     if request.data or request.args:
-        credentials = services.getcredentials.get_credentials(request.args)
+        params = request.args or request.get_json()
+        credentials = services.getcredentials.get_credentials(params)
         try:
             user = services.db.create_user(credentials[0], version)
         except ValueError as err:
