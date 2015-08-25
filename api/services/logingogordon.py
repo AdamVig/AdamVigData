@@ -36,10 +36,14 @@ def login_go_gordon(url, username, password, reauthenticate=False):
     else:
 
         if reauthenticate is True:
-            # Submit authentication form
-            browser.select_form(name="form1")
-            browser['password'] = password
-            browser.submit()
+
+            try:
+                browser.select_form(name="form1")
+            except mechanize.FormNotFoundError:
+                pass
+            else:
+                browser['password'] = password
+                browser.submit()
 
             error_message = "Logon failure: unknown user name or bad password"
 
