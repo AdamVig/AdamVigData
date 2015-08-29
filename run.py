@@ -289,6 +289,7 @@ def log_request(response):
         app.logger.info(log)
     else:
         app.logger.error(log)
+        print traceback.format_exc()
     return response
 
 
