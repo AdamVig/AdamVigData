@@ -30,6 +30,7 @@ def get_chapel_credits(username, password):
     try:
         credit_table = page.find_all('table')[8]
     except IndexError as err:
+        print err
         raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
     else:
         credits = credit_table \
