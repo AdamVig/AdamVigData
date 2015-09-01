@@ -226,6 +226,25 @@ class AdamVigAPITestCase(unittest.TestCase):
         except ValueError:
             self.fail("Data is not valid JSON: " + response.data)
 
+    #################
+    # CHAPEL EVENTS #
+    #################
+
+    def test_chapel_events(self):
+        """Test chapel events."""
+        end_point = 'chapelevents'
+        credentials = '?username={username}&password={password}' \
+            .format(username=self.username, password=self.password)
+
+        print "Test chapel events: "
+        response = self.app.get(self.end_point_prefix + '/' +
+                                end_point + credentials)
+        self.assertEqual(response.status_code, httplib.OK)
+        try:
+            json.loads(response.data)
+        except ValueError:
+            self.fail("Data is not valid JSON: " + response.data)
+
 
 if __name__ == '__main__':
     unittest.main()

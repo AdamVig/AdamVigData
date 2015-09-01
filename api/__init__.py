@@ -12,7 +12,7 @@ import config
 import services
 from chapelcredits import *
 from checklogin import *
-from nextchapelevent import *
+from chapelevents import *
 from daysleftinsemester import *
 from mealpoints import *
 from mealpointsperday import *

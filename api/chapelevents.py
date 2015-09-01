@@ -1,4 +1,4 @@
-"""Get description of next chapel event from Go Gordon."""
+"""Get chapel events from Go Gordon."""
 import mechanize
 import httplib
 import urllib2
@@ -11,10 +11,10 @@ chapel_date_format = '%m/%d/%Y %I:%M %p'
 
 
 def get_next_chapel_event(username, password):
-    """Get description of next chapel event."""
+    """Get next chapel event."""
     next_chapel_event = None
     next_chapel_event_time = None
-    all_chapel_events = get_all_chapel_events(username, password)
+    all_chapel_events = get_chapel_events(username, password)['data']
     time_now = getdate.get_date_time_object()
 
     for event_date, event_description in all_chapel_events.iteritems():
@@ -39,7 +39,7 @@ def get_next_chapel_event(username, password):
     }
 
 
-def get_all_chapel_events(username, password):
+def get_chapel_events(username, password):
     """Get list of all chapel events from Go Gordon."""
     all_chapel_events = get_cached_chapel_events()
 
@@ -88,7 +88,7 @@ def get_all_chapel_events(username, password):
                             .text              \
                             .strip()
 
-                event_title = smart_truncate(event_title, 50)
+                event_title = smart_truncate(event_title, 30)
 
                 event_date = chapel_event.find_all('td')[2].text.strip()
                 event_time = chapel_event.find_all('td')[3].text.strip()
@@ -101,7 +101,9 @@ def get_all_chapel_events(username, password):
                               all_chapel_events,
                               CHAPEL_EVENTS_UPDATE_INTERVAL_MINUTES)
 
-    return all_chapel_events
+    return {
+        'data': all_chapel_events
+    }
 
 
 def get_cached_chapel_events():

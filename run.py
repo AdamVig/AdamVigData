@@ -182,9 +182,24 @@ def route_temperature(version):
         return "Temperature endpoint is working."
 
 
+@app.route(END_POINT_PREFIX + 'chapelevents',
+           methods=['GET', 'POST', 'HEAD'])
+def route_chapel_events(version):
+    """Handle requests for chapel events."""
+    if request.data or request.args:
+        request_info = {
+            'args': request.args or request.get_json(),
+            'endpoint': 'chapelEvents',
+            'version': version
+        }
+        return get_data(get_chapel_events, request_info, cache=False)
+    else:
+        return "Chapel events endpoint is working."
+
+
 @app.route(END_POINT_PREFIX + 'nextchapelevent',
            methods=['GET', 'POST', 'HEAD'])
-def route_nextchapelevent(version):
+def route_next_chapel_event(version):
     """Handle requests for next chapel event."""
     if request.data or request.args:
         request_info = {
