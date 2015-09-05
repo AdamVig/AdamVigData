@@ -108,13 +108,16 @@ def get_chapel_events(username, password):
                 chapel_datetime_format = chapel_date_format + \
                     ' ' + chapel_time_format
                 event_datetime = arrow.get(event_datetime,
-                                           chapel_datetime_format)
+                                           chapel_datetime_format).to(TIMEZONE)
+
+                event_relative = event_datetime.humanize()
 
                 event_data = {
                     'title': event_title,
                     'date': event_date.format(DATE_FORMAT),
                     'time': event_time.format(TIME_FORMAT),
                     'datetime': event_datetime.format(DATETIME_FORMAT),
+                    'relative': event_relative
                 }
 
                 all_chapel_events.append(event_data)
