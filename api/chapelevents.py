@@ -2,12 +2,10 @@
 import mechanize
 import httplib
 import urllib2
+import arrow
 from bs4 import BeautifulSoup
 from services import db
-from services import getdate
 from config import *
-
-chapel_date_format = '%m/%d/%Y %I:%M %p'
 
 
 def get_next_chapel_event(username, password):
@@ -15,11 +13,14 @@ def get_next_chapel_event(username, password):
     next_chapel_event = None
     next_chapel_event_time = None
     all_chapel_events = get_chapel_events(username, password)['data']
-    time_now = getdate.get_date_time_object()
+    time_now = arrow.now(TIMEZONE)
 
-    for event_date, event_description in all_chapel_events.iteritems():
-        event_datetime = getdate.parse_date_time(event_date,
-                                                 chapel_date_format)
+    for event in all_chapel_events:
+        event_date = event['date'] + ' ' + event['time']
+        try:
+            event_datetime = arrow.get(event_date, chapel_date_format)
+        except arrow.parser.ParserError:
+            event_datetime = None
 
         if event_datetime is not None:
 
@@ -30,21 +31,26 @@ def get_next_chapel_event(username, password):
             # If event has not already happened and is before next_chapel_event
             if (event_datetime > time_now and
                     event_datetime < next_chapel_event_time):
-                next_chapel_event = event_description
+                next_chapel_event = event['title']
                 next_chapel_event_time = event_datetime
 
     return {
         'data': next_chapel_event,
-        'eventTime': getdate.make_datetime_string(next_chapel_event_time)
+        'eventTime': next_chapel_event_time.format(date_format)
     }
 
 
 def get_chapel_events(username, password):
     """Get list of all chapel events from Go Gordon."""
-    all_chapel_events = get_cached_chapel_events()
+    chapel_events = get_cached_chapel_events()
 
-    time_expiration = getdate.parse_date_time(all_chapel_events['expiration'])
-    time_now = getdate.get_date_time_object()
+    try:
+        time_expiration = arrow.get(
+            chapel_events['expiration'],
+            DATETIME_FORMAT)
+    except arrow.parser.ParserError:
+        time_expiration = None
+    time_now = arrow.now(TIMEZONE)
 
     if time_now > time_expiration:
         url = 'https://go.gordon.edu/student/chapelcredits/viewupcoming.cfm'
@@ -72,7 +78,7 @@ def get_chapel_events(username, password):
                              httplib.INTERNAL_SERVER_ERROR)
         else:
             page = BeautifulSoup(browser.response().read())
-            all_chapel_events = {}
+            all_chapel_events = []
 
             chapel_events_table = page \
                 .find_all('table')[-1] \
@@ -87,22 +93,32 @@ def get_chapel_events(username, password):
                             .find_all('a')[0]  \
                             .text              \
                             .strip()
-
                 event_title = smart_truncate(event_title, 30)
 
-                event_date = chapel_event.find_all('td')[2].text.strip()
+                chapel_time_format = 'mm:hh A'
                 event_time = chapel_event.find_all('td')[3].text.strip()
+                event_time = arrow.get(event_time, chapel_time_format)
 
-                event_key = event_date + ' ' + event_time
+                chapel_date_format = 'MM/DD/YYYY'
+                event_date = chapel_event.find_all('td')[2].text.strip()
+                event_date = arrow.get(event_date, chapel_date_format)
 
-                all_chapel_events[event_key] = event_title
+                event_data = {
+                    'title': event_title,
+                    'date': event_date.format(DATE_FORMAT),
+                    'time': event_time.format(TIME_FORMAT),
+                }
+
+                all_chapel_events.append(event_data)
+
+            chapel_events = {'events': all_chapel_events}
 
             db.cache_app_data('chapelEvents',
-                              all_chapel_events,
+                              chapel_events,
                               CHAPEL_EVENTS_UPDATE_INTERVAL_MINUTES)
 
     return {
-        'data': all_chapel_events
+        'data': chapel_events['events']
     }
 
 
