@@ -95,7 +95,7 @@ def get_chapel_events(username, password):
                             .strip()
                 event_title = smart_truncate(event_title, 30)
 
-                chapel_time_format = 'mm:hh A'
+                chapel_time_format = 'hh:mm A'
                 event_time = chapel_event.find_all('td')[3].text.strip()
                 event_time = arrow.get(event_time, chapel_time_format)
 
