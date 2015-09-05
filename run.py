@@ -37,7 +37,9 @@ def get_data(getter, request_info, log=True, cache=True):
     try:
         credentials = getcredentials.get_credentials(request_info.get('args'))
     except ValueError as err:
-        return app.make_response((err.message, httplib.BAD_REQUEST))
+        print "ValueError in credentials: " + err.message
+        return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
+                                  httplib.BAD_REQUEST))
 
     # Get data
     try:
@@ -46,12 +48,15 @@ def get_data(getter, request_info, log=True, cache=True):
         if len(err.args) == 2:
             return app.make_response((err.args[0], err.args[1]))
         else:
-            return app.make_response((err.message,
-                                     httplib.INTERNAL_SERVER_ERROR))
+            print "ValueError in " + request_info['endpoint'] + \
+                ": " + err.message
+            return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
+                                      httplib.INTERNAL_SERVER_ERROR))
     except Exception as err:
         print traceback.format_exc()
-        return app.make_response((err.message,
-                                 httplib.INTERNAL_SERVER_ERROR))
+        print "Exception in " + request_info['endpoint'] + ": " + err.message
+        return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
+                                  httplib.INTERNAL_SERVER_ERROR))
     else:
         if log is True:
             # Log usage
@@ -64,7 +69,9 @@ def get_data(getter, request_info, log=True, cache=True):
         if isinstance(data, dict):
             return jsonify(data)
         else:
-            return app.make_response(("Data was not retrieved as dictionary.",
+            print "Error converting data to JSON in endpoint " + \
+                request_info['endpoint']
+            return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                      httplib.BAD_GATEWAY))
 
 
@@ -310,7 +317,7 @@ def log_request(response):
 @app.errorhandler(httplib.INTERNAL_SERVER_ERROR)
 def handle_500_error(err):
     """Return generic error message for internal server error."""
-    return app.make_response(("Unhandled error in app.",
+    return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                              httplib.INTERNAL_SERVER_ERROR))
 
 if __name__ == '__main__':
