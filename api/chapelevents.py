@@ -95,18 +95,26 @@ def get_chapel_events(username, password):
                             .strip()
                 event_title = smart_truncate(event_title, 30)
 
-                chapel_time_format = 'hh:mm A'
-                event_time = chapel_event.find_all('td')[3].text.strip()
-                event_time = arrow.get(event_time, chapel_time_format)
-
                 chapel_date_format = 'MM/DD/YYYY'
                 event_date = chapel_event.find_all('td')[2].text.strip()
+                event_datetime = event_date
                 event_date = arrow.get(event_date, chapel_date_format)
+
+                chapel_time_format = 'hh:mm A'
+                event_time = chapel_event.find_all('td')[3].text.strip()
+                event_datetime += ' ' + event_time
+                event_time = arrow.get(event_time, chapel_time_format)
+
+                chapel_datetime_format = chapel_date_format + \
+                    ' ' + chapel_time_format
+                event_datetime = arrow.get(event_datetime,
+                                           chapel_datetime_format)
 
                 event_data = {
                     'title': event_title,
                     'date': event_date.format(DATE_FORMAT),
                     'time': event_time.format(TIME_FORMAT),
+                    'datetime': event_datetime.format(DATETIME_FORMAT),
                 }
 
                 all_chapel_events.append(event_data)
