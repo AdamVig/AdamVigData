@@ -1,7 +1,7 @@
 """Interface with database."""
 from config import *
 import couchdb
-import getdate
+import arrow
 import httplib
 from datetime import timedelta
 
@@ -45,10 +45,10 @@ def save_app_info(key, data, db=get_db()):
 def cache_app_data(data_type, data, update_interval_minutes, db=get_db()):
     """Cache app data in the cache doc with expiration date."""
     app_cache = get_doc('cache', db)
-    now = getdate.get_date_time_object()
+    now = arrow.now(TIMEZONE)
     expiration_time = now + timedelta(minutes=update_interval_minutes)
 
-    data['expiration'] = getdate.make_datetime_string(expiration_time)
+    data['expiration'] = expiration_time.format(DATETIME_FORMAT)
 
     app_cache[data_type] = data
     db.save(app_cache)
@@ -78,7 +78,7 @@ def log_usage(username, data_type, app_version, data, should_cache=True):
             user['dataRequests'][data_type] = 1
 
         # Set last login time to now and mark as active
-        user['lastLogin'] = getdate.get_date()
+        user['lastLogin'] = arrow.now(TIMEZONE).format(DATETIME_FORMAT)
         user['active'] = True
 
         # Set app version
@@ -160,8 +160,8 @@ def create_user(username, app_version):
     except ValueError:
         user = {
             '_id': username,
-            'firstLogin': getdate.get_date(),
-            'lastLogin': getdate.get_date(),
+            'firstLogin': arrow.now(TIMEZONE).format(DATETIME_FORMAT),
+            'lastLogin': arrow.now(TIMEZONE).format(DATETIME_FORMAT),
             'appVersion': app_version,
             'totalLogins': 0,
             'dataRequests': {},

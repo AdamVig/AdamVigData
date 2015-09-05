@@ -11,7 +11,11 @@ CHAPEL_EVENTS_UPDATE_INTERVAL_MINUTES = 60
 PAPERTRAIL_URL = 'logs2.papertrailapp.com'
 PAPERTRAIL_PORT = 26735
 
-DATE_FORMAT = '%m/%d/%y %I:%M %p'
+DATE_FORMAT = 'MM/DD/YY'
+TIME_FORMAT = 'hh:mm A'
+DATETIME_FORMAT = DATE_FORMAT + ' ' + TIME_FORMAT
+
+TIMEZONE = 'US/Eastern'
 LOG_FORMAT = '[%(levelname)s] %(message)s'
 
 END_POINT_PREFIX = '/gocostudent/<version>/'

@@ -1,7 +1,7 @@
 """Get current temperature in Wenham, MA."""
 from config import *
+import arrow
 from services import db
-from services import getdate
 import forecastio
 
 
@@ -10,8 +10,14 @@ def get_temperature(username, password):
     temperature = None
     cached_weather = db.get_doc('cache')['weather']
 
-    time_expiration = getdate.parse_date_time(cached_weather['expiration'])
-    time_now = getdate.get_date_time_object()
+    try:
+        time_expiration = arrow.get(
+            cached_weather['expiration'],
+            DATETIME_FORMAT)
+    except arrow.parser.ParserError:
+        time_expiration = None
+
+    time_now = arrow.now(TIMEZONE)
 
     if time_now < time_expiration:
         temperature = cached_weather['temperature']
