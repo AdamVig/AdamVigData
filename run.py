@@ -38,6 +38,8 @@ def get_data(getter, request_info, log=True, cache=True):
         credentials = getcredentials.get_credentials(request_info.get('args'))
     except ValueError as err:
         print "ValueError in credentials: " + err.message
+        if DEBUG:
+            print traceback.format_exc()
         return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                   httplib.BAD_REQUEST))
 
@@ -50,16 +52,18 @@ def get_data(getter, request_info, log=True, cache=True):
         else:
             print "ValueError in " + request_info['endpoint'] + \
                 ": " + err.message
+            if DEBUG:
+                print traceback.format_exc()
             return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                       httplib.INTERNAL_SERVER_ERROR))
     except Exception as err:
-        print traceback.format_exc()
         print "Exception in " + request_info['endpoint'] + ": " + err.message
+        if DEBUG:
+            print traceback.format_exc()
         return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                   httplib.INTERNAL_SERVER_ERROR))
     else:
         if log is True:
-            # Log usage
             services.db.log_usage(credentials[0],
                                   request_info.get('endpoint'),
                                   request_info.get('version'),
