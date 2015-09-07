@@ -93,7 +93,6 @@ def get_chapel_events(username, password):
                             .find_all('a')[0]  \
                             .text              \
                             .strip()
-                event_title = smart_truncate(event_title, 30)
 
                 chapel_date_format = 'MM/DD/YYYY'
                 event_date = chapel_event.find_all('td')[2].text.strip()
@@ -136,14 +135,3 @@ def get_chapel_events(username, password):
 def get_cached_chapel_events():
     """Get cached chapel events from database."""
     return db.get_doc('cache')['chapelEvents']
-
-
-def smart_truncate(content, length=100, suffix='...'):
-    """Truncate a string without cutting off in the middle of a word.
-
-    From http://stackoverflow.com/a/250373/1850656
-    """
-    if len(content) <= length:
-        return content
-    else:
-        return ' '.join(content[:length+1].split(' ')[0:-1]) + suffix
