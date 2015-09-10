@@ -64,8 +64,9 @@ def get_meal_points(username, password):
 
 def parse_meal_points(meal_points):
     """Parse meal points string into a rounded integer."""
-    # Remove dollar sign
-    meal_points = meal_points[1:]
+    # Remove dollar sign and comma
+    meal_points = meal_points.strip('$')
+    meal_points = meal_points.replace(',', '')
 
     # Convert to float
     meal_points = float(meal_points)
