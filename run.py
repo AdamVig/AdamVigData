@@ -24,7 +24,7 @@ streamhandler.setFormatter(formatter)
 sysloghandler.setFormatter(formatter)
 app.logger.addHandler(sysloghandler)
 app.logger.addHandler(streamhandler)
-app.logger.setLevel(logging.INFO)
+app.logger.setLevel(logging.DEBUG)
 
 
 def get_data(getter, request_info, log=True, cache=True):
