@@ -80,13 +80,14 @@ def get_chapel_events(username, password):
             page = BeautifulSoup(browser.response().read())
             all_chapel_events = []
 
+            # Get list of all chapel events
             chapel_events_table = page \
                 .find_all('table')[-1] \
                 .find_all('tr')
 
             del chapel_events_table[0]  # Remove header row
 
-            # Normalize data
+            # Convert table into readable data format
             for chapel_event in chapel_events_table:
                 event_title = chapel_event     \
                             .find_all('td')[1] \
@@ -94,22 +95,26 @@ def get_chapel_events(username, password):
                             .text              \
                             .strip()
 
+                # Get event date
                 chapel_date_format = 'MM/DD/YYYY'
                 event_date = chapel_event.find_all('td')[2].text.strip()
                 event_datetime = event_date
                 event_date = arrow.get(event_date, chapel_date_format)
 
+                # Get event time
                 chapel_time_format = 'hh:mm A'
                 event_time = chapel_event.find_all('td')[3].text.strip()
                 event_datetime += ' ' + event_time
                 event_time = arrow.get(event_time, chapel_time_format)
 
+                # Create datetime
                 chapel_datetime_format = chapel_date_format + \
                     ' ' + chapel_time_format
                 event_datetime = arrow.get(event_datetime,
                                            chapel_datetime_format).to(TIMEZONE)
 
                 event_relative = event_datetime.humanize()
+                # Create description of how long until event
 
                 event_data = {
                     'title': event_title,
