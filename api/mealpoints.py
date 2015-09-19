@@ -19,20 +19,20 @@ def get_meal_points(username, password):
 
     # Navigate to mealpoints page
     browser.open('/ICS/Students/Mealpoints.jnz')
-
-    # Parse HTML to find URL that iFrame points to
+    # Parse HTML
     page = BeautifulSoup(browser.response().read())
+    # Get iFrame from page
+    iframe = get_iframe(page)
 
-    # Test for error caused by professor accounts
-    notFoundMessage = page.find('span', {"class": "notFound"})
-    if notFoundMessage is not None:
-        if notFoundMessage.string == "You do not have the necessary \
-                permissions to view this page.":
-            raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
-
-    iframe = page.find('iframe')
+    # Attempt to pass through security questions prompt
+    if iframe is None and page.find('form'):
+        browser.select_form(name="MAINFORM")
+        browser.submit(name="CP$V$gbtnCancel")
+        page = BeautifulSoup(browser.response().read())
+        iframe = get_iframe(page)
 
     if iframe is None:
+        print "Could not find iFrame on My Gordon mealpoints page."
         raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
 
     # Navigate to page that displays mealpoints
@@ -75,6 +75,19 @@ def parse_meal_points(meal_points):
     meal_points = int(meal_points)
 
     return meal_points
+
+
+def get_iframe(page):
+    """Get iFrame from web page."""
+
+    # Test for error caused by professor accounts
+    notFoundMessage = page.find('span', {"class": "notFound"})
+    if notFoundMessage is not None:
+        if notFoundMessage.string == "You do not have the necessary \
+                permissions to view this page.":
+            raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
+
+    return page.find('iframe')
 
 
 def login_my_gordon(username, password, browser):
