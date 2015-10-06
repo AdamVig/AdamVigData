@@ -3,6 +3,7 @@ import mechanize
 import httplib
 import urllib2
 import arrow
+from datetime import datetime
 from bs4 import BeautifulSoup
 from services import db
 from config import *
@@ -141,3 +142,21 @@ def get_chapel_events(username, password):
 def get_cached_chapel_events():
     """Get cached chapel events from database."""
     return db.get_doc('cache')['chapelEvents']
+
+
+def make_relative_date(date_time):
+    """Make a relative date string from a datetime."""
+    time_until_datetime = date_time.naive - datetime.now()
+
+    # If any time next week, get weekday names
+    if time_until_datetime.days > 1 and time_until_datetime.days < 7:
+        relative_date = "next " + date_time.format('dddd')
+
+    # Otherwise use default humanize output
+    else:
+        relative_date = date_time.humanize()
+
+        if relative_date == "in a day":
+            relative_date = "tomorrow"
+
+    return relative_date
