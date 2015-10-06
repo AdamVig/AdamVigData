@@ -12,7 +12,7 @@ def create_log(request, response):
     response_data = response.data
     path = request.path
 
-    if method != 'GET' or 'POST':
+    if method != 'GET' and method != 'POST':
         log_message += 'method={method}{separator}' \
             .format(method=method, separator=separator)
 
@@ -27,7 +27,7 @@ def create_log(request, response):
 
     if 'username' in request_data:
         log_message += 'user={username}{separator}' \
-            .format(username=request.get('username'),
+            .format(username=request_data.get('username'),
                     separator=separator)
 
     return log_message
