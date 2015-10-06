@@ -165,7 +165,7 @@ def create_user(username, app_version):
             'appVersion': app_version,
             'totalLogins': 0,
             'dataRequests': {},
-            'active': True
+            'active': False
         }
         save_user(user, db)
 
