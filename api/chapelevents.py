@@ -146,11 +146,18 @@ def get_cached_chapel_events():
 
 def make_relative_date(date_time):
     """Make a relative date string from a datetime."""
-    time_until_datetime = date_time.naive - datetime.now()
+    current_date_time = datetime.now()
+    time_until = date_time.naive - current_date_time
 
     # If any time next week, get weekday names
-    if time_until_datetime.days > 1 and time_until_datetime.days < 7:
-        relative_date = "next " + date_time.format('dddd')
+    if time_until.days > 1 and time_until.days < 7:
+        relative_date = date_time.format('dddd')
+
+        # Prepend 'next' to weekday name if next week
+        current_week_number = current_date_time.isocalendar()[1]
+        week_number = date_time.isocalendar()[1]
+        if week_number > current_week_number:
+            relative_date = "next " + relative_date
 
     # Otherwise use default humanize output
     else:
