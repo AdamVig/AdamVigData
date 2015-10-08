@@ -112,11 +112,12 @@ def get_chapel_events(username, password):
                 chapel_datetime_format = chapel_date_format + \
                     ' ' + chapel_time_format
                 event_datetime = arrow.get(event_datetime,
-                                           chapel_datetime_format) \
-                                      .replace(hours=+5)
+                                           chapel_datetime_format)
 
                 # Create description of how long until event
-                event_relative = make_relative_date(event_datetime)
+                # Add five hours to event_datetime to fix timezone problem
+                event_relative = make_relative_date(event_datetime
+                                                    .replace(hours=+5))
 
                 event_data = {
                     'title': event_title,
