@@ -25,7 +25,7 @@ def create_log(request, response):
     log_message += 'path={path}{separator}' \
         .format(path=path, separator=separator)
 
-    if 'username' in request_data:
+    if request_data and request_data.get('username'):
         log_message += 'user={username}{separator}' \
             .format(username=request_data.get('username'),
                     separator=separator)
