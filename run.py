@@ -27,15 +27,10 @@ app.logger.addHandler(streamhandler)
 app.logger.setLevel(logging.DEBUG)
 
 
-def get_data(getter, request_info, log=True, cache=True):
-    """Get data using the provided getter function and request.
-
-    getter : function to get data with
-    request_info : contains credentials, endpoint name, and API version
-    """
-    # Get username and password
+def get_credentials(request_info):
+    """Get credentials from request."""
     try:
-        credentials = getcredentials.get_credentials(request_info.get('args'))
+        return getcredentials.get_credentials(request_info.get('args'))
     except ValueError as err:
         print "ValueError in credentials: " + err.message
         if DEBUG:
@@ -43,7 +38,36 @@ def get_data(getter, request_info, log=True, cache=True):
         return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                   httplib.BAD_REQUEST))
 
-    # Get data
+
+def prepare_data(data, request_info):
+    """Prepare data for response by converting to JSON and logging."""
+    if log is True:
+        services.db.log_usage(credentials[0],
+                              request_info.get('endpoint'),
+                              request_info.get('version'),
+                              data,
+                              cache)
+
+    # Return JSON if data is in correct format
+    if isinstance(data, dict):
+            return jsonify(data)
+
+    # Raise error if data is not in correct format
+    else:
+        print "Error converting data to JSON in endpoint " + \
+            request_info['endpoint']
+        return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
+                                 httplib.BAD_GATEWAY))
+
+
+def get_data(getter, request_info, log=True, cache=True):
+    """Get data using the provided getter function and request.
+
+    getter : function to get data with
+    request_info : contains credentials, endpoint name, and API version
+    """
+    credentials = get_credentials(request_info)
+
     try:
         data = getter(credentials[0], credentials[1])
     except ValueError as err:
@@ -63,20 +87,7 @@ def get_data(getter, request_info, log=True, cache=True):
         return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                   httplib.INTERNAL_SERVER_ERROR))
     else:
-        if log is True:
-            services.db.log_usage(credentials[0],
-                                  request_info.get('endpoint'),
-                                  request_info.get('version'),
-                                  data,
-                                  cache)
-
-        if isinstance(data, dict):
-            return jsonify(data)
-        else:
-            print "Error converting data to JSON in endpoint " + \
-                request_info['endpoint']
-            return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
-                                     httplib.BAD_GATEWAY))
+        return prepare_data(data, request_info)
 
 
 @app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'POST', 'HEAD'])
