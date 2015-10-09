@@ -319,13 +319,22 @@ def before_request():
 
 
 @app.after_request
-def log_request(response):
+def after_request(response):
     """Log request in application logger."""
     log = services.log.create_log(request, response)
     if response.status_code == httplib.OK:
         app.logger.info(log)
     else:
         app.logger.error(log)
+
+    # Add CORS headers to response
+    response.headers['Access-Control-Allow-Origin'] = \
+        request.headers.get('Origin', '*')
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET'
+    response.headers['Access-Control-Allow-Headers'] = \
+        request.headers.get('Access-Control-Request-Headers',
+                            'Authorization')
     return response
 
 
