@@ -39,14 +39,14 @@ def get_credentials(request_info):
                                   httplib.BAD_REQUEST))
 
 
-def prepare_data(data, request_info):
+def prepare_data(data, request_info, shouldLog, shouldCache):
     """Prepare data for response by converting to JSON and logging."""
-    if log is True:
-        services.db.log_usage(credentials[0],
+    if shouldLog is True:
+        services.db.log_usage(get_credentials(request_info)[0],
                               request_info.get('endpoint'),
                               request_info.get('version'),
                               data,
-                              cache)
+                              shouldCache)
 
     # Return JSON if data is in correct format
     if isinstance(data, dict):
@@ -60,7 +60,7 @@ def prepare_data(data, request_info):
                                  httplib.BAD_GATEWAY))
 
 
-def get_data(getter, request_info, log=True, cache=True):
+def get_data(getter, request_info, shouldLog=True, shouldCache=True):
     """Get data using the provided getter function and request.
 
     getter : function to get data with
@@ -87,7 +87,7 @@ def get_data(getter, request_info, log=True, cache=True):
         return app.make_response((error_message['INTERNAL_SERVER_ERROR'],
                                   httplib.INTERNAL_SERVER_ERROR))
     else:
-        return prepare_data(data, request_info)
+        return prepare_data(data, request_info, shouldLog, shouldCache)
 
 
 @app.route(END_POINT_PREFIX + 'chapelcredits', methods=['GET', 'POST', 'HEAD'])
