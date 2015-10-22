@@ -128,7 +128,8 @@ def route_days_left_in_semester(version):
             'endpoint': 'daysLeftInSemester',
             'version': version
         }
-        return get_data(get_days_left_in_semester, request_info, cache=False)
+        return get_data(get_days_left_in_semester, request_info,
+                        shouldCache=False)
     else:
         return "Days left in semester endpoint is working."
 
@@ -157,7 +158,7 @@ def route_student_id(version):
             'endpoint': 'studentID',
             'version': version
         }
-        return get_data(get_student_id, request_info, cache=False)
+        return get_data(get_student_id, request_info, shouldCache=False)
     else:
         return "Student ID endpoint is working."
 
@@ -171,7 +172,7 @@ def route_student_info(version):
             'endpoint': 'studentInfo',
             'version': version
         }
-        return get_data(get_student_info, request_info, cache=False)
+        return get_data(get_student_info, request_info, shouldCache=False)
     else:
         return "Student info endpoint is working."
 
@@ -185,7 +186,7 @@ def route_next_meal(version):
             'endpoint': 'nextMeal',
             'version': version
         }
-        return get_data(get_next_meal, request_info, cache=False)
+        return get_data(get_next_meal, request_info, shouldCache=False)
     else:
         return "Next meal endpoint is working."
 
@@ -199,7 +200,7 @@ def route_temperature(version):
             'endpoint': 'temperature',
             'version': version
         }
-        return get_data(get_temperature, request_info, cache=False)
+        return get_data(get_temperature, request_info, shouldCache=False)
     else:
         return "Temperature endpoint is working."
 
@@ -214,7 +215,7 @@ def route_chapel_events(version):
             'endpoint': 'chapelEvents',
             'version': version
         }
-        return get_data(get_chapel_events, request_info, cache=False)
+        return get_data(get_chapel_events, request_info, shouldCache=False)
     else:
         return "Chapel events endpoint is working."
 
@@ -229,7 +230,7 @@ def route_next_chapel_event(version):
             'endpoint': 'nextChapelEvent',
             'version': version
         }
-        return get_data(get_next_chapel_event, request_info, cache=False)
+        return get_data(get_next_chapel_event, request_info, shouldCache=False)
     else:
         return "Next chapel event endpoint is working."
 
@@ -243,7 +244,8 @@ def route_check_login(version):
             'endpoint': 'checkLogin',
             'version': version
         }
-        return get_data(check_login, request_info, log=False, cache=False)
+        return get_data(check_login, request_info, shouldLog=False,
+                        shouldCache=False)
     else:
         return "Check login endpoint is working."
 
