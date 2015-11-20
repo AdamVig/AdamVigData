@@ -2,7 +2,7 @@
 from services.logingogordon import login_go_gordon
 import httplib
 from bs4 import BeautifulSoup
-from config import error_message
+from config import ERROR_MESSAGE
 
 
 def get_student_id(username, password):
@@ -27,6 +27,6 @@ def get_student_id(username, password):
         try:
             student_id = student_id[:4] + ' ' + student_id[4:]
         except ValueError as err:
-            raise ValueError(error_message['NOT_FOUND'], httplib.NOT_FOUND)
+            raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
 
         return {'data': student_id}

@@ -71,14 +71,14 @@ def get_chapel_events(username, password):
             browser.open(url)
         except urllib2.HTTPError as err:
             if err.code == httplib.UNAUTHORIZED:
-                raise ValueError(config.error_message['UNAUTHORIZED'],
+                raise ValueError(config.ERROR_MESSAGE['UNAUTHORIZED'],
                                  httplib.UNAUTHORIZED)
             else:
-                raise ValueError(config.error_message['INTERNAL_SERVER_ERROR'],
+                raise ValueError(config.ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
                                  httplib.INTERNAL_SERVER_ERROR)
 
         except Exception:
-            raise ValueError(config.error_message['INTERNAL_SERVER_ERROR'],
+            raise ValueError(config.ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
                              httplib.INTERNAL_SERVER_ERROR)
         else:
             chapel_events = parse_chapel_events(browser)
