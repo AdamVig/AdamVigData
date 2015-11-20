@@ -5,8 +5,11 @@ import urllib2
 import arrow
 from datetime import datetime
 from bs4 import BeautifulSoup
-from services import db
-from config import *
+from api.services import db
+import config
+
+CHAPEL_DATE_FORMAT = 'MM/DD/YYYY'
+CHAPEL_TIME_FORMAT = 'hh:mm A'
 
 
 def get_next_chapel_event(username, password):
@@ -14,12 +17,12 @@ def get_next_chapel_event(username, password):
     next_chapel_event = None
     next_chapel_event_time = None
     all_chapel_events = get_chapel_events(username, password)['data']
-    time_now = arrow.now(TIMEZONE)
+    time_now = arrow.now(config.TIMEZONE)
 
     for event in all_chapel_events:
         event_date = event['date'] + ' ' + event['time']
         try:
-            event_datetime = arrow.get(event_date, chapel_date_format)
+            event_datetime = arrow.get(event_date, CHAPEL_DATE_FORMAT)
         except arrow.parser.ParserError:
             event_datetime = None
 
@@ -37,7 +40,7 @@ def get_next_chapel_event(username, password):
 
     return {
         'data': next_chapel_event,
-        'eventTime': next_chapel_event_time.format(date_format)
+        'eventTime': next_chapel_event_time.format(config.DATE_FORMAT)
     }
 
 
@@ -48,10 +51,10 @@ def get_chapel_events(username, password):
     try:
         time_expiration = arrow.get(
             chapel_events['expiration'],
-            DATETIME_FORMAT)
+            config.DATETIME_FORMAT)
     except arrow.parser.ParserError:
         time_expiration = None
-    time_now = arrow.now(TIMEZONE)
+    time_now = arrow.now(config.TIMEZONE)
 
     if time_now > time_expiration:
         url = 'https://go.gordon.edu/student/chapelcredits/viewupcoming.cfm'
@@ -68,72 +71,21 @@ def get_chapel_events(username, password):
             browser.open(url)
         except urllib2.HTTPError as err:
             if err.code == httplib.UNAUTHORIZED:
-                raise ValueError(error_message['UNAUTHORIZED'],
+                raise ValueError(config.error_message['UNAUTHORIZED'],
                                  httplib.UNAUTHORIZED)
             else:
-                raise ValueError(error_message['INTERNAL_SERVER_ERROR'],
+                raise ValueError(config.error_message['INTERNAL_SERVER_ERROR'],
                                  httplib.INTERNAL_SERVER_ERROR)
 
         except Exception:
-            raise ValueError(error_message['INTERNAL_SERVER_ERROR'],
+            raise ValueError(config.error_message['INTERNAL_SERVER_ERROR'],
                              httplib.INTERNAL_SERVER_ERROR)
         else:
-            page = BeautifulSoup(browser.response().read())
-            all_chapel_events = []
-
-            # Get list of all chapel events
-            chapel_events_table = page \
-                .find_all('table')[-1] \
-                .find_all('tr')
-
-            del chapel_events_table[0]  # Remove header row
-
-            # Convert table into readable data format
-            for chapel_event in chapel_events_table:
-                event_title = chapel_event     \
-                            .find_all('td')[1] \
-                            .find_all('a')[0]  \
-                            .text              \
-                            .strip()
-
-                # Get event date
-                chapel_date_format = 'MM/DD/YYYY'
-                event_date = chapel_event.find_all('td')[2].text.strip()
-                event_datetime = event_date
-                event_date = arrow.get(event_date, chapel_date_format)
-
-                # Get event time
-                chapel_time_format = 'hh:mm A'
-                event_time = chapel_event.find_all('td')[3].text.strip()
-                event_datetime += ' ' + event_time
-                event_time = arrow.get(event_time, chapel_time_format)
-
-                # Create datetime
-                chapel_datetime_format = chapel_date_format + \
-                    ' ' + chapel_time_format
-                event_datetime = arrow.get(event_datetime,
-                                           chapel_datetime_format)
-
-                # Create description of how long until event
-                # Add five hours to event_datetime to fix timezone problem
-                event_relative = make_relative_date(event_datetime
-                                                    .replace(hours=+5))
-
-                event_data = {
-                    'title': event_title,
-                    'date': event_date.format(DISPLAY_DATE_FORMAT),
-                    'time': event_time.format(DISPLAY_TIME_FORMAT),
-                    'datetime': event_datetime.format(DISPLAY_DATETIME_FORMAT),
-                    'relative': event_relative
-                }
-
-                all_chapel_events.append(event_data)
-
-            chapel_events = {'events': all_chapel_events}
+            chapel_events = parse_chapel_events(browser)
 
             db.cache_app_data('chapelEvents',
                               chapel_events,
-                              CHAPEL_EVENTS_UPDATE_INTERVAL_MINUTES)
+                              config.CHAPEL_EVENTS_UPDATE_INTERVAL_MINUTES)
 
     return {
         'data': chapel_events['events']
@@ -174,3 +126,58 @@ def make_relative_date(date_time):
             relative_date = "tomorrow"
 
     return relative_date
+
+
+def parse_chapel_events(browser):
+    """Parse chapel events from retrieved page."""
+    page = BeautifulSoup(browser.response.read())
+    all_chapel_events = []
+
+    # Get list of all chapel events
+    chapel_events_table = page \
+        .find_all('table')[-1] \
+        .find_all('tr')
+
+    del chapel_events_table[0]  # Remove header row
+
+    # Convert table into readable data format
+    for chapel_event in chapel_events_table:
+        event_title = chapel_event     \
+                    .find_all('td')[1] \
+                    .find_all('a')[0]  \
+                    .text              \
+                    .strip()
+
+        # Get event date
+        event_date = chapel_event.find_all('td')[2].text.strip()
+        event_datetime = event_date
+        event_date = arrow.get(event_date, CHAPEL_DATE_FORMAT)
+
+        # Get event time
+        event_time = chapel_event.find_all('td')[3].text.strip()
+        event_datetime += ' ' + event_time
+        event_time = arrow.get(event_time, CHAPEL_TIME_FORMAT)
+
+        # Create datetime
+        chapel_datetime_format = CHAPEL_DATE_FORMAT + \
+            ' ' + CHAPEL_TIME_FORMAT
+        event_datetime = arrow.get(event_datetime,
+                                   chapel_datetime_format)
+
+        # Create description of how long until event
+        # Add five hours to event_datetime to fix timezone problem
+        event_relative = make_relative_date(event_datetime
+                                            .replace(hours=+5))
+
+        event_data = {
+            'title': event_title,
+            'date': event_date.format(config.DISPLAY_DATE_FORMAT),
+            'time': event_time.format(config.DISPLAY_TIME_FORMAT),
+            'datetime': event_datetime.format(
+                config.DISPLAY_DATETIME_FORMAT),
+            'relative': event_relative
+        }
+
+        all_chapel_events.append(event_data)
+
+    return {'events': all_chapel_events}
