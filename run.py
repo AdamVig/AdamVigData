@@ -205,6 +205,21 @@ def route_temperature(version):
         return "Temperature endpoint is working."
 
 
+@app.route(END_POINT_PREFIX + 'highlandexpress',
+           methods=['GET', 'POST', 'HEAD'])
+def route_highland_express(version):
+    """Handle requests for Highland Express data."""
+    if request.data or request.args:
+        request_info = {
+            'args': request.args or request.get_json(),
+            'endpoint': 'highlandExpress',
+            'version': version
+        }
+        return get_data(get_highland_express, request_info, shouldCache=True)
+    else:
+        return "Highland express endpoint is working."
+
+
 @app.route(END_POINT_PREFIX + 'chapelevents',
            methods=['GET', 'POST', 'HEAD'])
 def route_chapel_events(version):
