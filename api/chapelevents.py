@@ -98,7 +98,7 @@ def make_relative_date(date_time):
 
 def parse_chapel_events(browser):
     """Parse chapel events from retrieved page."""
-    page = BeautifulSoup(browser.response.read())
+    page = BeautifulSoup(browser.response().read())
     all_chapel_events = []
 
     # Get list of all chapel events
