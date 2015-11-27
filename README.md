@@ -119,6 +119,51 @@ Here is a list of endpoints you can retrieve data from:
     "data": 72
   }
   ```
++ `/highlandexpress`
+  - different schedule for weekdays, Fridays, Saturdays, and Sundays
+  - each day's schedule object contains a list of destinations (`stops`) and a
+  list of arrival times (`times`)
+  - cached
+  ```
+  {
+    "banner": {
+    "title": "Test Banner",
+    "body": "This is a test banner!"
+  },
+  "schedule": {
+    "weekdays": {
+      "stops": [
+        "Chapel Loop",
+        "Hamilton/Wenham Commuter Rail"
+      ],
+      "times": [
+        [
+          "7:40am",
+          "8:05am"
+        ],
+        ...
+      ]
+    },
+    "friday": {
+      "stops": [
+        "Chapel Loop",
+        "Hamilton/Wenham Commuter Rail",
+        "North Shore Mall"
+      ],
+      "times": [
+        [
+          "7:40am",
+          "8:05am",
+          ""
+        ],
+        ...
+      ]
+    },
+    "saturday": {...},
+    "sunday": {...}
+  }
+  }
+  ```
 + `/mealpoints`
   - decimal value is rounded up
   - data is a number
