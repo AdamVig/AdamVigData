@@ -259,7 +259,7 @@ gunicorn -c gunicorn_config.py --reload run:app
 ### Production:
 I recommend deploying the app via git to Heroku or some similar service. I use
 Dokku, a Heroku clone running on a DigitalOcean VPS (Virtual Private Server).
-Heroku and Dokku rely on the `Procfile` to describe how to run the app.
+Heroku and Dokku rely on the `Procfile`, which describes how to run the app.
 
 ## 5. Testing
 I test the app in local development using `curl`, for example:
