@@ -14,6 +14,7 @@ def get_highland_express(username, password):
         raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
     else:
         highland_data['day'] = decide_schedule_day()
+        highland_data['days'] = highland_data['schedule'].keys()
         return {
             'data': highland_data
         }
