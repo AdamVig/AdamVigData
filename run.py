@@ -250,6 +250,22 @@ def route_next_chapel_event(version):
         return "Next chapel event endpoint is working."
 
 
+@app.route(END_POINT_PREFIX + 'mockerror',
+           methods=['GET', 'POST', 'HEAD'])
+def route_mock_error(version):
+    """Handle requests for mock error."""
+    if request.data or request.args:
+        request_info = {
+            'args': request.args or request.get_json(),
+            'endpoint': 'mockError',
+            'version': version
+        }
+        return get_data(get_mock_error, request_info, shouldCache=False,
+                        shouldLog=False)
+    else:
+        return "Mock error endpoint is working."
+
+
 @app.route(END_POINT_PREFIX + 'checklogin', methods=['GET', 'POST', 'HEAD'])
 def route_check_login(version):
     """Handle requests to check login."""

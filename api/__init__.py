@@ -14,6 +14,7 @@ from chapelcredits import *
 from checklogin import *
 from chapelevents import *
 from daysleftinsemester import *
+from mockerror import *
 from mealpoints import *
 from mealpointsperday import *
 from nextmeal import *
