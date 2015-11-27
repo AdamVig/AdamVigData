@@ -95,6 +95,20 @@ Here is a list of endpoints you can retrieve data from:
     "outof": 30
   }
   ```
++ `/chapelevents`
+  - each event contains date, time, datetime, relative date, and event title
+  - cached
+  ```
+  {
+    "date": "Dec 9",
+    "datetime": "Dec 9 10:25 AM",
+    "relative": "in 12 days",
+    "time": "10:25 AM",
+    "title": "Chapel: Rev. Tom Haugen"
+  },
+  {...},
+  ...
+  ```
 + `/daysleftinsemester`
   - returns 0 if the semester is over
   - data is a number
