@@ -362,6 +362,13 @@ def handle_500_error(err):
     return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
                              httplib.INTERNAL_SERVER_ERROR))
 
+
+@app.errorhandler(httplib.NOT_FOUND)
+def handle_404_error(err):
+    """Return generic error message for not found error."""
+    return app.make_response((ERROR_MESSAGE['NOT_FOUND'],
+                             httplib.NOT_FOUND))
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
