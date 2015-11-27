@@ -24,6 +24,17 @@ def get_doc(doc_id, db=get_db()):
         return doc
 
 
+def update_doc(doc, db=get_db()):
+    """Update doc in database."""
+    try:
+        updated_doc = db.save(doc)
+    except couchdb.ResourceConflict:
+        raise couchdb.ResourceConflict("Document update conflict on " +
+                                       doc.get('_id'))
+    else:
+        return updated_doc
+
+
 def save_user(user, db=get_db()):
     """Save user in database or update existing user."""
     try:
