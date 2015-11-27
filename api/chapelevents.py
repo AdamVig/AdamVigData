@@ -12,38 +12,6 @@ CHAPEL_DATE_FORMAT = 'MM/DD/YYYY'
 CHAPEL_TIME_FORMAT = 'hh:mm A'
 
 
-def get_next_chapel_event(username, password):
-    """Get next chapel event."""
-    next_chapel_event = None
-    next_chapel_event_time = None
-    all_chapel_events = get_chapel_events(username, password)['data']
-    time_now = arrow.now(config.TIMEZONE)
-
-    for event in all_chapel_events:
-        event_date = event['date'] + ' ' + event['time']
-        try:
-            event_datetime = arrow.get(event_date, CHAPEL_DATE_FORMAT)
-        except arrow.parser.ParserError:
-            event_datetime = None
-
-        if event_datetime is not None:
-
-            # Set next event time to arbitrary datetime
-            if not next_chapel_event_time:
-                next_chapel_event_time = event_datetime
-
-            # If event has not already happened and is before next_chapel_event
-            if (event_datetime > time_now and
-                    event_datetime < next_chapel_event_time):
-                next_chapel_event = event['title']
-                next_chapel_event_time = event_datetime
-
-    return {
-        'data': next_chapel_event,
-        'eventTime': next_chapel_event_time.format(config.DATE_FORMAT)
-    }
-
-
 def get_chapel_events(username, password):
     """Get list of all chapel events from Go Gordon."""
     chapel_events = get_cached_chapel_events()

@@ -235,21 +235,6 @@ def route_chapel_events(version):
         return "Chapel events endpoint is working."
 
 
-@app.route(END_POINT_PREFIX + 'nextchapelevent',
-           methods=['GET', 'POST', 'HEAD'])
-def route_next_chapel_event(version):
-    """Handle requests for next chapel event."""
-    if request.data or request.args:
-        request_info = {
-            'args': request.args or request.get_json(),
-            'endpoint': 'nextChapelEvent',
-            'version': version
-        }
-        return get_data(get_next_chapel_event, request_info, shouldCache=False)
-    else:
-        return "Next chapel event endpoint is working."
-
-
 @app.route(END_POINT_PREFIX + 'mockerror',
            methods=['GET', 'POST', 'HEAD'])
 def route_mock_error(version):
