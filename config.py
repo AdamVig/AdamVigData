@@ -1,5 +1,5 @@
 """Configuration parameters for the app."""
-DEBUG = True
+DEBUG = False
 TESTING = False
 
 WENHAM_LATITUDE = 42.587576
