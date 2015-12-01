@@ -135,8 +135,7 @@ def parse_chapel_events(browser):
 
         # Create description of how long until event
         # Add five hours to event_datetime to fix timezone problem
-        event_relative = make_relative_date(event_datetime
-                                            .replace(hours=+5))
+        event_relative = make_relative_date(event_datetime)
 
         event_data = {
             'title': event_title,
