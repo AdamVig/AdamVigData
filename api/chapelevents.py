@@ -10,6 +10,8 @@ import config
 
 CHAPEL_DATE_FORMAT = 'MM/DD/YYYY'
 CHAPEL_TIME_FORMAT = 'hh:mm A'
+CHAPEL_DATETIME_FORMAT = CHAPEL_DATE_FORMAT + \
+    ' ' + CHAPEL_TIME_FORMAT
 
 
 def get_chapel_events(username, password):
@@ -127,10 +129,8 @@ def parse_chapel_events(browser):
         event_time = arrow.get(event_time, CHAPEL_TIME_FORMAT)
 
         # Create datetime
-        chapel_datetime_format = CHAPEL_DATE_FORMAT + \
-            ' ' + CHAPEL_TIME_FORMAT
         event_datetime = arrow.get(event_datetime,
-                                   chapel_datetime_format)
+                                   CHAPEL_DATETIME_FORMAT)
 
         # Create description of how long until event
         # Add five hours to event_datetime to fix timezone problem
