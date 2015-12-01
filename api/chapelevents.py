@@ -90,7 +90,8 @@ def make_relative_date(date_time):
 
     # Otherwise use default humanize output
     else:
-        relative_date = date_time.humanize()
+        # Explicit use of current time to prevent timezone errors
+        relative_date = date_time.humanize(current_date_time)
 
         if relative_date == "in a day":
             relative_date = "tomorrow"
