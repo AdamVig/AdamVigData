@@ -81,7 +81,7 @@ def get_data(getter, request_info, shouldLog=True, shouldCache=True):
             return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
                                       httplib.INTERNAL_SERVER_ERROR))
     except Exception as err:
-        print "Exception in " + request_info['endpoint'] + ": " + err
+        print "Exception in " + request_info['endpoint'] + ": " + str(err)
         if DEBUG:
             print traceback.format_exc()
         return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
