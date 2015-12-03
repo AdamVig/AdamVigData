@@ -1,4 +1,6 @@
 """Configuration parameters for the app."""
+import httplib
+
 DEBUG = False
 TESTING = False
 
@@ -37,6 +39,12 @@ ERROR_MESSAGE = {
     "NOT_FOUND":             "Couldn't find data. " + EMOJI['SAD_FACE'],
     "UNAUTHORIZED":          "Your login is wrong. " + EMOJI['SHRUG']
 }
+
+# Construct dictionary of tuples of error messages and codes
+ERROR_INFO = {}
+for error_name, error_message in ERROR_MESSAGE.iteritems():
+    error_code = getattr(httplib, error_name)
+    ERROR_INFO[error_name] = (error_message, error_code)
 
 # Get API keys and server info either from local file or environment variables
 try:
