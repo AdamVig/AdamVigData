@@ -3,7 +3,7 @@ import mechanize
 import httplib
 import urllib2
 from bs4 import BeautifulSoup
-from config import ERROR_MESSAGE
+from config import ERROR_INFO
 
 
 def get_next_meal(username, password):
@@ -22,15 +22,12 @@ def get_next_meal(username, password):
         browser.open(url)
     except urllib2.HTTPError as err:
         if err.code == httplib.UNAUTHORIZED:
-            raise ValueError(ERROR_MESSAGE['UNAUTHORIZED'],
-                             httplib.UNAUTHORIZED)
+            raise ValueError(ERROR_INFO['UNAUTHORIZED'])
         else:
-            raise ValueError(ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                             httplib.INTERNAL_SERVER_ERROR)
+            raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
     except Exception:
-        raise ValueError(ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                         httplib.INTERNAL_SERVER_ERROR)
+        raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
     else:
         page = BeautifulSoup(browser.response().read())
 

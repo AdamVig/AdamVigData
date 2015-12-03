@@ -1,6 +1,6 @@
 """Get chapel credits from Go Gordon."""
 from services.logingogordon import login_go_gordon
-from config import ERROR_MESSAGE
+from config import ERROR_INFO
 import httplib
 from bs4 import BeautifulSoup
 
@@ -31,7 +31,7 @@ def get_chapel_credits(username, password):
         credit_table = page.find_all('table')[8]
     except IndexError as err:
         print err
-        raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
+        raise ValueError(ERROR_INFO['NOT_FOUND'])
     else:
         credits = credit_table \
             .find_all('tr')[0] \

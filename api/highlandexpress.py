@@ -1,7 +1,6 @@
 """Get Highland Express data."""
-from config import ERROR_MESSAGE, TIMEZONE
+from config import ERROR_INFO, TIMEZONE
 from api.services import db
-import httplib
 import arrow
 
 
@@ -11,7 +10,7 @@ def get_highland_express(username, password):
         highland_data = db.get_doc('highlandexpress')
     except ValueError:
         print "Highland Express doc is missing!"
-        raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
+        raise ValueError(ERROR_INFO['NOT_FOUND'])
     else:
         highland_data['day'] = decide_schedule_day()
         highland_data['days'] = highland_data['schedule'].keys()
@@ -25,8 +24,7 @@ def update_highland_express(doc):
     try:
         updated_doc = db.update_doc(doc)
     except:
-        raise ValueError(ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                         httplib.INTERNAL_SERVER_ERROR)
+        raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
     else:
         return updated_doc
 

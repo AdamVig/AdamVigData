@@ -1,6 +1,6 @@
 """Calculate number of mealpoints per day."""
 from mealpoints import get_meal_points
-from config import ERROR_MESSAGE
+from config import ERROR_INFO
 from daysleftinsemester import get_days_left_in_semester
 import httplib
 
@@ -17,4 +17,4 @@ def get_meal_points_per_day(username, password):
         meal_points_per_day = 0
         return {'data': meal_points_per_day}
     else:
-        raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
+        raise ValueError(ERROR_INFO['NOT_FOUND'])

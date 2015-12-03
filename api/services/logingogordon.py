@@ -24,15 +24,12 @@ def login_go_gordon(url, username, password, reauthenticate=False):
         browser.open(url)
     except urllib2.HTTPError as err:
         if err.code == httplib.UNAUTHORIZED:
-            raise ValueError(config.ERROR_MESSAGE['UNAUTHORIZED'],
-                             httplib.UNAUTHORIZED)
+            raise ValueError(config.ERROR_INFO['UNAUTHORIZED'])
         else:
-            raise ValueError(config.ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                             httplib.INTERNAL_SERVER_ERROR)
+            raise ValueError(config.ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
     except Exception as err:
-        raise ValueError(config.ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                         httplib.INTERNAL_SERVER_ERROR)
+        raise ValueError(config.ERROR_INFO['INTERNAL_SERVER_ERROR'])
     else:
 
         if reauthenticate is True:
@@ -45,10 +42,9 @@ def login_go_gordon(url, username, password, reauthenticate=False):
                 browser['password'] = password
                 browser.submit()
 
-            ERROR_MESSAGE = "Logon failure: unknown user name or bad password"
+            page_error = "Logon failure: unknown user name or bad password"
 
-            if ERROR_MESSAGE in browser.response().read():
-                raise ValueError(config.ERROR_MESSAGE['UNAUTHORIZED'],
-                                 httplib.UNAUTHORIZED)
+            if page_error in browser.response().read():
+                raise ValueError(config.ERROR_INFO['UNAUTHORIZED'])
 
         return browser

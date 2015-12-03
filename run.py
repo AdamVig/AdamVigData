@@ -56,8 +56,7 @@ def prepare_data(data, request_info, shouldLog, shouldCache):
     else:
         print "Error converting data to JSON in endpoint " + \
             request_info['endpoint']
-        return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                                 httplib.BAD_GATEWAY))
+        return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
 
 def get_data(getter, request_info, shouldLog=True, shouldCache=True):
@@ -72,22 +71,20 @@ def get_data(getter, request_info, shouldLog=True, shouldCache=True):
         data = getter(credentials[0], credentials[1])
     except ValueError as err:
         # Custom error message
-        if len(err.args) == 2:
-            return app.make_response((err.args[0], err.args[1]))
+        if isinstance(err.args[0], tuple):
+            return app.make_response(err.args[0])
         # Generic error message
         else:
             print "ValueError in " + request_info['endpoint'] + \
                 ": " + err.message
             if DEBUG:
                 print traceback.format_exc()
-            return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                                      httplib.INTERNAL_SERVER_ERROR))
+            return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
     except Exception as err:
         print "Exception in " + request_info['endpoint'] + ": " + str(err)
         if DEBUG:
             print traceback.format_exc()
-        return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                                  httplib.INTERNAL_SERVER_ERROR))
+        return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
     else:
         return prepare_data(data, request_info, shouldLog, shouldCache)
 
@@ -363,15 +360,13 @@ def after_request(response):
 @app.errorhandler(httplib.INTERNAL_SERVER_ERROR)
 def handle_500_error(err):
     """Return generic error message for internal server error."""
-    return app.make_response((ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                             httplib.INTERNAL_SERVER_ERROR))
+    return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
 
 @app.errorhandler(httplib.NOT_FOUND)
 def handle_404_error(err):
     """Return generic error message for not found error."""
-    return app.make_response((ERROR_MESSAGE['NOT_FOUND'],
-                             httplib.NOT_FOUND))
+    return app.make_response(ERROR_INFO['NOT_FOUND'])
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

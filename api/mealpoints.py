@@ -1,7 +1,7 @@
 """"Get mealpoints from My Gordon."""
 import mechanize
 import httplib
-from config import ERROR_MESSAGE
+from config import ERROR_INFO
 from bs4 import BeautifulSoup
 
 
@@ -14,8 +14,7 @@ def get_meal_points(username, password):
     # Check for invalid login
     soup = BeautifulSoup(browser.response().read())
     if soup.find(id="CP_V_lblLoginMessage"):
-        raise ValueError(ERROR_MESSAGE['UNAUTHORIZED'],
-                         httplib.UNAUTHORIZED)
+        raise ValueError(ERROR_INFO['UNAUTHORIZED'])
 
     # Navigate to mealpoints page
     browser.open('/ICS/Students/Mealpoints.jnz')
@@ -33,7 +32,7 @@ def get_meal_points(username, password):
 
     if iframe is None:
         print "Could not find iFrame on My Gordon mealpoints page."
-        raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
+        raise ValueError(ERROR_INFO['NOT_FOUND'])
 
     # Navigate to page that displays mealpoints
     browser.open('https://my.gordon.edu' + iframe['src'])
@@ -58,8 +57,7 @@ def get_meal_points(username, password):
         return {'data': meal_points}
 
     else:
-        raise ValueError(ERROR_MESSAGE['INTERNAL_SERVER_ERROR'],
-                         httplib.INTERNAL_SERVER_ERROR)
+        raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
 
 def parse_meal_points(meal_points):
@@ -79,13 +77,12 @@ def parse_meal_points(meal_points):
 
 def get_iframe(page):
     """Get iFrame from web page."""
-
     # Test for error caused by professor accounts
     notFoundMessage = page.find('span', {"class": "notFound"})
     if notFoundMessage is not None:
         if notFoundMessage.string == "You do not have the necessary \
                 permissions to view this page.":
-            raise ValueError(ERROR_MESSAGE['NOT_FOUND'], httplib.NOT_FOUND)
+            raise ValueError(ERROR_INFO['NOT_FOUND'])
 
     return page.find('iframe')
 
