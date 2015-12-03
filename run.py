@@ -71,8 +71,10 @@ def get_data(getter, request_info, shouldLog=True, shouldCache=True):
     try:
         data = getter(credentials[0], credentials[1])
     except ValueError as err:
+        # Custom error message
         if len(err.args) == 2:
             return app.make_response((err.args[0], err.args[1]))
+        # Generic error message
         else:
             print "ValueError in " + request_info['endpoint'] + \
                 ": " + err.message
