@@ -7,4 +7,4 @@ def get_mock_error(username, password):
     """Raise a random error."""
     error_info = random.choice(list(ERROR_INFO.values()))
 
-    raise ValueError(*error_info)
+    raise ValueError(error_info)
