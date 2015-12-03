@@ -1,12 +1,10 @@
 """Return a random error message."""
-from config import ERROR_MESSAGE
+from config import ERROR_INFO
 import random
 
 
 def get_mock_error(username, password):
-    """Return a random error message."""
-    error_message = random.choice(list(ERROR_MESSAGE.values()))
+    """Raise a random error."""
+    error_info = random.choice(list(ERROR_INFO.values()))
 
-    return {
-        'data': error_message
-    }
+    raise ValueError(*error_info)
