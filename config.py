@@ -33,8 +33,11 @@ EMOJI = {
     "SHRUG": u'\U0001F481'
 }
 
-# Error messages should be 22 characters max
+# Key must be name of HTTP status code from httplib,
+#   see complete list here: https://docs.python.org/2/library/httplib.html
+# Value must be 22 characters or fewer
 ERROR_MESSAGE = {
+    # Character measurement: 0_____________________23
     "INTERNAL_SERVER_ERROR": "Something went wrong! " + EMOJI['SOS'],
     "NOT_FOUND":             "Couldn't find data. " + EMOJI['SAD_FACE'],
     "UNAUTHORIZED":          "Your login is wrong. " + EMOJI['SHRUG']
