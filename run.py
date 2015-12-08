@@ -350,7 +350,8 @@ def after_request(response):
     response.headers['Access-Control-Allow-Origin'] = \
         request.headers.get('Origin', '*')
     response.headers['Access-Control-Allow-Credentials'] = 'true'
-    response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS, GET'
+    response.headers['Access-Control-Allow-Methods'] = \
+        'POST, OPTIONS, GET, PUT'
     response.headers['Access-Control-Allow-Headers'] = \
         request.headers.get('Access-Control-Request-Headers',
                             'Authorization')
