@@ -231,7 +231,8 @@ def route_highland_express(version):
         except ValueError as err:
             return make_error_response(err, request_info)
         else:
-            return updated_doc
+            return prepare_data(updated_doc, request_info,
+                                shouldLog=False, shouldCache=False)
     else:
         return "Highland Express endpoint is working."
 
