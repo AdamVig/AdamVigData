@@ -221,7 +221,17 @@ def route_highland_express(version):
         }
         return get_data(get_highland_express, request_info, shouldCache=False)
     elif request.method == 'PUT':
-        return update_highland_express(request.get_json())
+        request_info = {
+            'args': request.args or request.get_json(),
+            'endpoint': 'highlandExpress',
+            'version': version
+        }
+        try:
+            updated_doc = update_highland_express(request_info['args'])
+        except ValueError as err:
+            return make_error_response(err, request_info)
+        else:
+            return updated_doc
     else:
         return "Highland Express endpoint is working."
 

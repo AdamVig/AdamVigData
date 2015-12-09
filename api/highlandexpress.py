@@ -2,6 +2,7 @@
 from config import ERROR_INFO, TIMEZONE
 from api.services import db
 import arrow
+import couchdb
 
 
 def get_highland_express(username, password):
@@ -23,10 +24,15 @@ def update_highland_express(doc):
     """Update Highland Express data in database."""
     try:
         updated_doc = db.update_doc(doc)
-    except:
+    except couchdb.ResourceConflict:
+        raise ValueError(ERROR_INFO['CONFLICT'])
+    except Exception as err:
+        print "Error updating Highland Express doc:", err
         raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
     else:
-        return updated_doc
+        return {
+            "data": updated_doc
+        }
 
 
 def decide_schedule_day():
