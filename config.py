@@ -30,7 +30,8 @@ EMOJI = {
     "SAD_FACE": u'\U0001F62D',
     "SOS": u'\U0001F198',
     "CLAPPING": u'\U0001F44F',
-    "SHRUG": u'\U0001F481'
+    "SHRUG": u'\U0001F481',
+    "CROSSED_SWORDS": u'\U00002694'
 }
 
 # Key must be name of HTTP status code from httplib,
@@ -40,7 +41,8 @@ ERROR_MESSAGE = {
     # Character measurement: 0_____________________23
     "INTERNAL_SERVER_ERROR": "Something went wrong! " + EMOJI['SOS'],
     "NOT_FOUND":             "Couldn't find data. " + EMOJI['SAD_FACE'],
-    "UNAUTHORIZED":          "Your login is wrong. " + EMOJI['SHRUG']
+    "UNAUTHORIZED":          "Your login is wrong. " + EMOJI['SHRUG'],
+    "CONFLICT":              "Could not save data. " + EMOJI['CROSSED_SWORDS']
 }
 
 # Construct dictionary of tuples of error messages and codes
