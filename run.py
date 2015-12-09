@@ -59,6 +59,20 @@ def prepare_data(data, request_info, shouldLog, shouldCache):
         return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
 
+def make_error_response(err, request_info):
+    """Make error message response based on error and request info."""
+    # Custom error message
+    if isinstance(err.args[0], tuple):
+        return app.make_response(err.args[0])
+    # Generic error message
+    else:
+        print "ValueError in " + request_info['endpoint'] + \
+            ": " + err.message
+        if DEBUG:
+            print traceback.format_exc()
+        return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
+
+
 def get_data(getter, request_info, shouldLog=True, shouldCache=True):
     """Get data using the provided getter function and request.
 
@@ -70,16 +84,7 @@ def get_data(getter, request_info, shouldLog=True, shouldCache=True):
     try:
         data = getter(credentials[0], credentials[1])
     except ValueError as err:
-        # Custom error message
-        if isinstance(err.args[0], tuple):
-            return app.make_response(err.args[0])
-        # Generic error message
-        else:
-            print "ValueError in " + request_info['endpoint'] + \
-                ": " + err.message
-            if DEBUG:
-                print traceback.format_exc()
-            return app.make_response(ERROR_INFO['INTERNAL_SERVER_ERROR'])
+        return make_error_response(err, request_info)
     except Exception as err:
         print "Exception in " + request_info['endpoint'] + ": " + str(err)
         if DEBUG:
