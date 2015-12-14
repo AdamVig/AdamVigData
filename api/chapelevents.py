@@ -52,7 +52,7 @@ def get_chapel_events(username, password):
 
             db.cache_app_data('chapelEvents',
                               chapel_events,
-                              config.CHAPEL_EVENTS_UPDATE_INTERVAL_MINUTES)
+                              config.UPDATE_INTERVAL['CHAPEL_EVENTS'])
 
     return {
         'data': chapel_events['events']

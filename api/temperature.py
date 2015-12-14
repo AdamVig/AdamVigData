@@ -38,6 +38,6 @@ def get_temperature(username, password):
 
         db.cache_app_data('weather',
                           weather_data,
-                          WEATHER_UPDATE_INTERVAL_MINUTES)
+                          UPDATE_INTERVAL['WEATHER'])
 
     return {'data': temperature}
