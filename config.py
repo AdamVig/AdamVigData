@@ -10,7 +10,8 @@ WENHAM_LONGITUDE = -70.824631
 # Time to wait between cache updates, in minutes
 UPDATE_INTERVAL = {
     "WEATHER": 15,
-    "CHAPEL_EVENTS": 60
+    "CHAPEL_EVENTS": 60,
+    "ATHLETICS_SCHEDULE": 60
 }
 
 PAPERTRAIL_URL = 'logs2.papertrailapp.com'
