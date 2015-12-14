@@ -252,6 +252,22 @@ def route_chapel_events(version):
         return "Chapel events endpoint is working."
 
 
+@app.route(END_POINT_PREFIX + 'athleticsschedule',
+           methods=['GET', 'POST', 'HEAD'])
+def route_athletics_schedule(version):
+    """Handle requests for athletics schedule."""
+    if request.data or request.args:
+        request_info = {
+            'args': request.args or request.get_json(),
+            'endpoint': 'athleticsSchedule',
+            'version': version
+        }
+        return get_data(get_athletics_schedule, request_info,
+                        shouldCache=False)
+    else:
+        return "Athletics schedule endpoint is working."
+
+
 @app.route(END_POINT_PREFIX + 'mockerror',
            methods=['GET', 'POST', 'HEAD'])
 def route_mock_error(version):

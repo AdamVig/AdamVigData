@@ -10,6 +10,7 @@ from flask.ext.cors import CORS, cross_origin
 
 import config
 import services
+from athleticsschedule import *
 from chapelcredits import *
 from checklogin import *
 from chapelevents import *
