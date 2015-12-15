@@ -5,7 +5,7 @@ import arrow
 import config
 from api.services import db
 
-URL = "http://athletics.gordon.edu/calendar.ashx/calendar.rss?sport_id=&han="
+URL = "http://athletics.gordon.edu/calendar.ashx/calendar.rss"
 CACHE_KEY = "athleticsSchedule"
 
 # Create fake header to circumvent user agent filtering
