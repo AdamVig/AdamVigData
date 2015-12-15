@@ -48,4 +48,8 @@ def parse_athletics_rss(feed):
 
 def get_cached_athletics_schedule():
     """Get cached athletics schedule from database."""
-    return db.get_doc('cache')[CACHE_KEY]
+    try:
+        return db.get_doc('cache')[CACHE_KEY]
+    except KeyError:
+        print "Could not find cached athletics schedule."
+        raise
