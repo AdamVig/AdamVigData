@@ -1,4 +1,5 @@
 """Get Gordon Athletics schedule."""
+from fake_useragent import UserAgent
 import requests
 import arrow
 import config
@@ -6,6 +7,9 @@ from api.services import db
 
 URL = "http://athletics.gordon.edu/calendar.ashx/calendar.rss?sport_id=&han="
 CACHE_KEY = "athleticsSchedule"
+
+# Create fake header to circumvent user agent filtering
+HEADERS = {'User-Agent': UserAgent().chrome}
 
 
 def get_athletics_schedule(username, password):
@@ -26,6 +30,7 @@ def get_athletics_schedule(username, password):
         try:
             feed = requests.get(URL)
             athletics_schedule = parse_athletics_rss(feed)
+            response = requests.get(URL, headers=HEADERS)
         except Exception as err:
             print "Error getting athletics schedule!"
         else:

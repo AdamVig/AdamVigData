@@ -2,6 +2,7 @@ arrow==0.6.0
 beautifulsoup4==4.3.2
 CouchDB==1.0
 eventlet==0.17.4
+fake-useragent==0.0.8
 Flask==0.10.1
 Flask-Cors==1.10.2
 greenlet==0.4.6
