@@ -34,12 +34,12 @@ def get_athletics_schedule(username, password):
         except Exception as err:
             raise ValueError("Could not retrieve athletics calendar: " + err)
         else:
-            athletics_schedule = parse_athletics_rss(response.text)
+            athletics_schedule['schedule'] = parse_athletics_rss(response.text)
             db.cache_app_data(CACHE_KEY,
                               athletics_schedule,
                               config.UPDATE_INTERVAL['ATHLETICS_SCHEDULE'])
     return {
-        'data': athletics_schedule
+        'data': athletics_schedule['schedule']
     }
 
 
