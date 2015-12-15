@@ -28,12 +28,12 @@ def get_athletics_schedule(username, password):
     # If data is expired, get fresh data from website
     if time_now > time_expiration:
         try:
-            feed = requests.get(URL)
-            athletics_schedule = parse_athletics_rss(feed)
             response = requests.get(URL, headers=HEADERS)
+            response.raise_for_status()
         except Exception as err:
-            print "Error getting athletics schedule!"
+            raise ValueError("Could not retrieve athletics calendar: " + err)
         else:
+            athletics_schedule = parse_athletics_rss(response.text)
             db.cache_app_data(CACHE_KEY,
                               athletics_schedule,
                               config.UPDATE_INTERVAL['ATHLETICS_SCHEDULE'])
