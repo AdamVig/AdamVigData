@@ -54,7 +54,8 @@ def parse_athletics_rss(feed):
 
     for item in rss_data.find_all('item'):
         event = parse_athletics_event(item)
-        athletics_schedule.append(event)
+        if event is not None:
+            athletics_schedule.append(event)
 
     return athletics_schedule
 
