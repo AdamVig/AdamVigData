@@ -94,11 +94,11 @@ def parse_athletics_event(item):
     }
 
     # Replace empty string values with explanatory string
-    string_keys = ['title', 'location', 'time']
+    string_keys = ['title', 'location', 'datetime', 'relative']
     error_explanation = "Unknown"
     for key, value in event.iteritems():
         if key in string_keys and value is None:
-            event[key] = error_explanation
+            event[key] = key.capitalize() + ' ' + error_explanation
 
     # Only return event if it has not happened yet
     if datetime > arrow.now():
