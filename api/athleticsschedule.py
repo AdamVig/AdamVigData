@@ -5,6 +5,7 @@ import requests
 import arrow
 import config
 from api.services import db
+from api.services import date
 
 URL = "http://athletics.gordon.edu/calendar.ashx/calendar.rss"
 CACHE_KEY = "athleticsSchedule"
@@ -89,6 +90,7 @@ def parse_athletics_event(item):
         'location': location,
         'opponentLogoURL': opponent_logo_url,
         'datetime': datetime_string,
+        'relative': datetime_relative
     }
 
     # Replace empty string values with explanatory string
