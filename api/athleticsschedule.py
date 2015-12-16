@@ -81,7 +81,7 @@ def parse_athletics_event(item):
 
     local_start_date = get_tag_string(item, 's:localstartdate')
     datetime = arrow.get(local_start_date)
-    datetime_string = datetime.format(config.DATETIME_FORMAT)
+    datetime_string = datetime.format(config.DISPLAY_DATETIME_FORMAT)
     datetime_relative = date.make_relative_date(datetime)
 
     event = {
