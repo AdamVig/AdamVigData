@@ -1,6 +1,5 @@
 """Get student ID from Go Gordon."""
 from services.logingogordon import login_go_gordon
-import httplib
 from bs4 import BeautifulSoup
 from config import ERROR_INFO
 
@@ -26,6 +25,9 @@ def get_student_id(username, password):
 
         try:
             student_id = student_id[:4] + ' ' + student_id[4:]
+            if len(student_id) > 9:
+                print "Invalid data found for student ID."
+                raise ValueError(ERROR_INFO['NOT_FOUND'])
         except ValueError as err:
             raise ValueError(ERROR_INFO['NOT_FOUND'])
 
