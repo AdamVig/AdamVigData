@@ -219,7 +219,12 @@ def route_highland_express(version):
             'endpoint': 'highlandExpress',
             'version': version
         }
-        return get_data(get_highland_express, request_info, shouldCache=False)
+        if request.method == 'POST':
+            return get_data(get_highland_express, request_info,
+                            shouldCache=False)
+        elif request.method == 'GET':
+            return get_data(get_highland_express, request_info,
+                            shouldLog=False, shouldCache=False)
     elif request.method == 'PUT':
         request_info = {
             'args': request.args or request.get_json(),
