@@ -8,8 +8,11 @@ def get_credentials(args):
     Retrieves username and password from args object and decode password
     using Base64 library.
     """
-    username = args.get('username')
-    password = args.get('password')
+    try:
+        username = args.get('username')
+        password = args.get('password')
+    except:
+        raise ValueError("Could not get credentials from args.")
 
     try:
         password = base64.b64decode(password)
