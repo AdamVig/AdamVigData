@@ -41,12 +41,12 @@ def get_credentials(request_info):
 
 def prepare_data(data, request_info, shouldLog, shouldCache):
     """Prepare data for response by converting to JSON and logging."""
-    if shouldLog is True:
-        services.db.log_usage(get_credentials(request_info)[0],
-                              request_info.get('endpoint'),
-                              request_info.get('version'),
-                              data,
-                              shouldCache)
+    #if shouldLog is True:
+        #services.db.log_usage(get_credentials(request_info)[0],
+         #                     request_info.get('endpoint'),
+          #                    request_info.get('version'),
+           #                   data,
+            #                  shouldCache)
 
     # Return JSON if data is in correct format
     if isinstance(data, dict):
