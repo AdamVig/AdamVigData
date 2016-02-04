@@ -37,9 +37,12 @@ def get_next_meal(username, password):
             .find_all('td')[-1]    \
             .text
 
-        # Remove extraneous whitespace
+        # Remove extraneous whitespace and convert text to array
         next_meal = next_meal    \
             .strip()             \
-            .replace('\n\r', '')
+            .replace('\n\r', '') \
+            .replace('\t', '')   \
+            .split('\n')         \
+            [1:]                   # Remove name of meal
 
         return {'data': next_meal}
