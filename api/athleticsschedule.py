@@ -1,6 +1,5 @@
 """Get Gordon Athletics schedule."""
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 import requests
 import arrow
 import config
@@ -11,7 +10,9 @@ URL = "http://athletics.gordon.edu/calendar.ashx/calendar.rss"
 CACHE_KEY = "athleticsSchedule"
 
 # Create fake header to circumvent user agent filtering
-HEADERS = {'User-Agent': UserAgent().chrome}
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+}
 
 
 def get_athletics_schedule(username, password):
