@@ -3,12 +3,16 @@ from config import ERROR_INFO, TIMEZONE
 from api.services import db
 import arrow
 import couchdb
+import requests
 
+URL = "https://gocostudent.adamvig.com/api/highlandexpress"
 
 def get_highland_express(username, password):
     """Get Highland Express data."""
     try:
-        highland_data = db.get_doc('highlandexpress')
+        r = requests.get(URL)
+        highland_data = r.json()['data']
+        print highland_data
     except ValueError:
         print "Highland Express doc is missing!"
         raise ValueError(ERROR_INFO['NOT_FOUND'])
@@ -22,17 +26,8 @@ def get_highland_express(username, password):
 
 def update_highland_express(doc):
     """Update Highland Express data in database."""
-    try:
-        updated_doc = db.update_doc(doc)
-    except couchdb.ResourceConflict:
-        raise ValueError(ERROR_INFO['CONFLICT'])
-    except Exception as err:
-        print "Error updating Highland Express doc:", err
-        raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
-    else:
-        return {
-            "data": updated_doc
-        }
+    print "This API is deprecated! Use new Highland Express API instead.:", err
+    raise ValueError(ERROR_INFO['INTERNAL_SERVER_ERROR'])
 
 
 def decide_schedule_day():
